@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KI-Landschaft in Deutschland</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --startup: #7c3aed;
+      --startup-light: #ede9fe;
+      --company: #1d4ed8;
+      --company-light: #dbeafe;
+      --datacenter: #059669;
+      --datacenter-light: #d1fae5;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --header-h: 70px;
+      --filter-h: 58px;
+    }
+    html, body { height: 100%; overflow: hidden; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+    /* ── HEADER ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: var(--header-h);
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      box-shadow: 0 2px 20px rgba(0,0,0,.4);
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .logo-icon { font-size: 28px; }
+    .header-title { color: #fff; font-size: 1.25rem; font-weight: 700; line-height: 1.2; }
+    .header-sub { color: #a5b4fc; font-size: 0.75rem; font-weight: 400; }
+    .header-search {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 10px; padding: 6px 14px; min-width: 280px;
+    }
+    .header-search i { color: rgba(255,255,255,.6); }
+    .header-search input {
+      background: none; border: none; outline: none;
+      color: #fff; font-size: 0.9rem; width: 100%;
+    }
+    .header-search input::placeholder { color: rgba(255,255,255,.5); }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    .stat-badge {
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+      border-radius: 20px; padding: 4px 12px; color: #e2e8f0; font-size: 0.75rem;
+    }
+    .stat-badge span { font-weight: 700; color: #a5b4fc; }
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 999;
+      height: var(--filter-h);
+      background: #fff; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px; padding: 0 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      overflow-x: auto;
+    }
+    .filter-bar::-webkit-scrollbar { height: 0; }
+    .filter-label { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; margin-right: 4px; }
+    .filter-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 16px; border-radius: 20px; border: 1.5px solid var(--border);
+      background: #fff; cursor: pointer; font-size: 0.82rem; font-weight: 500;
+      white-space: nowrap; transition: all .18s; color: var(--text);
+    }
+    .filter-btn:hover { border-color: #94a3b8; background: #f1f5f9; }
+    .filter-btn.active { color: #fff; border-color: transparent; }
+    .filter-btn.all.active   { background: var(--text); }
+    .filter-btn.startup.active  { background: var(--startup); }
+    .filter-btn.company.active  { background: var(--company); }
+    .filter-btn.datacenter.active { background: var(--datacenter); }
+    .filter-count {
+      background: rgba(255,255,255,.25); border-radius: 10px;
+      padding: 1px 7px; font-size: 0.72rem; font-weight: 700;
+    }
+    .filter-btn:not(.active) .filter-count { background: var(--border); color: var(--text-muted); }
+    .filter-sep { width: 1px; height: 28px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+    .city-select {
+      padding: 6px 12px; border-radius: 8px; border: 1.5px solid var(--border);
+      background: #fff; font-size: 0.82rem; color: var(--text); cursor: pointer; outline: none;
+    }
+    .city-select:focus { border-color: #94a3b8; }
+    /* ── MAIN LAYOUT ── */
+    .main-wrapper {
+      position: fixed;
+      top: calc(var(--header-h) + var(--filter-h));
+      left: 0; right: 0; bottom: 0;
+      display: flex;
+      overflow: hidden;
+    }
+    /* Map */
+    #map {
+      flex: 0 0 55%;
+      height: 100%;
+    }
+    /* Cards */
+    .cards-panel {
+      flex: 1; overflow-y: auto; background: var(--bg); padding: 16px;
+    }
+    .cards-panel::-webkit-scrollbar { width: 6px; }
+    .cards-panel::-webkit-scrollbar-track { background: #f1f5f9; }
+    .cards-panel::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .results-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px; padding: 0 4px;
+    }
+    .results-count { font-size: 0.85rem; color: var(--text-muted); }
+    .results-count strong { color: var(--text); }
+    /* ── CARD ── */
+    .card {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+      margin-bottom: 12px; padding: 16px; cursor: pointer;
+      transition: all .2s; position: relative; overflow: hidden;
+    }
+    .card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.1); transform: translateY(-2px); border-color: #cbd5e1; }
+    .card.highlighted { box-shadow: 0 0 0 2px #7c3aed, 0 6px 24px rgba(0,0,0,.15); }
+    .card-accent {
+      position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 12px 0 0 12px;
+    }
+    .startup  .card-accent { background: var(--startup); }
+    .company  .card-accent { background: var(--company); }
+    .datacenter .card-accent { background: var(--datacenter); }
+    .card-header { display: flex; align-items: flex-start; gap: 12px; margin-left: 8px; }
+    .card-icon {
+      width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+    }
+    .startup  .card-icon { background: var(--startup-light); color: var(--startup); }
+    .company  .card-icon { background: var(--company-light); color: var(--company); }
+    .datacenter .card-icon { background: var(--datacenter-light); color: var(--datacenter); }
+    .card-title-area { flex: 1; }
+    .card-name { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .badge {
+      font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 10px;
+      text-transform: uppercase; letter-spacing: .03em;
+    }
+    .badge-startup    { background: var(--startup-light); color: var(--startup); }
+    .badge-company    { background: var(--company-light); color: var(--company); }
+    .badge-datacenter { background: var(--datacenter-light); color: var(--datacenter); }
+    .badge-city { background: #f1f5f9; color: var(--text-muted); font-size: 0.72rem; }
+    .badge-industry   { background: #fef3c7; color: #92400e; }
+    .card-desc {
+      margin: 10px 0 0 52px; font-size: 0.83rem; color: var(--text-muted); line-height: 1.55;
+    }
+    .card-details {
+      margin: 10px 0 0 52px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    }
+    .detail-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--text-muted); }
+    .detail-item i { width: 14px; color: #94a3b8; flex-shrink: 0; }
+    .detail-item strong { color: var(--text); }
+    .card-tags { margin: 10px 0 0 52px; display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      font-size: 0.7rem; padding: 3px 9px; border-radius: 8px;
+      background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;
+      cursor: pointer; transition: all .15s; user-select: none;
+    }
+    .tag:hover { background: #e2e8f0; border-color: #94a3b8; color: #1e293b; }
+    .tag.active-tag { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+    .active-tag-bar {
+      display: none; align-items: center; gap: 8px; padding: 8px 16px;
+      margin-bottom: 12px; background: #ede9fe; border-radius: 10px; flex-wrap: wrap;
+    }
+    .active-tag-bar.visible { display: flex; }
+    .active-tag-bar .atb-label { font-size: 0.78rem; color: #7c3aed; font-weight: 600; white-space: nowrap; }
+    .active-tag-bar .atb-tag { font-size: 0.75rem; padding: 3px 10px; border-radius: 8px; background: #7c3aed; color: #fff; font-weight: 600; }
+    .active-tag-bar .atb-clear {
+      margin-left: auto; font-size: 0.75rem; color: #7c3aed; cursor: pointer;
+      border: 1px solid #c4b5fd; border-radius: 6px; padding: 3px 10px; background: #fff;
+      transition: all .15s; white-space: nowrap;
+    }
+    .active-tag-bar .atb-clear:hover { background: #7c3aed; color: #fff; }
+    .card-links { margin: 10px 0 0 52px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .card-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.75rem; color: #3b82f6; text-decoration: none;
+      padding: 4px 10px; border-radius: 6px; border: 1px solid #bfdbfe;
+      background: #eff6ff; transition: all .15s;
+    }
+    .card-link:hover { background: #dbeafe; border-color: #93c5fd; }
+    /* ── NO RESULTS ── */
+    .no-results {
+      text-align: center; padding: 48px 24px; color: var(--text-muted);
+    }
+    .no-results i { font-size: 3rem; margin-bottom: 16px; color: #cbd5e1; }
+    .no-results h3 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text); }
+    /* ── LEAFLET CUSTOM ── */
+    .marker-pin {
+      width: 32px; height: 32px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+      border: 2px solid rgba(255,255,255,.8); box-shadow: 0 2px 8px rgba(0,0,0,.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .leaflet-popup-content { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; min-width: 220px; }
+    .popup-header { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+    .popup-meta { color: #64748b; font-size: 12px; margin-bottom: 4px; }
+    .popup-link { color: #3b82f6; font-size: 12px; text-decoration: none; }
+    .popup-link:hover { text-decoration: underline; }
+    /* ── ADD BUTTON ── */
+    .add-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 16px; border-radius: 20px; border: 1.5px solid rgba(255,255,255,.25);
+      background: rgba(124,58,237,.6); color: #fff; cursor: pointer; font-size: 0.82rem;
+      font-weight: 600; white-space: nowrap; transition: all .18s; margin-left: 8px;
+    }
+    .add-btn:hover { background: rgba(124,58,237,.9); border-color: rgba(255,255,255,.4); }
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 2000;
+      background: rgba(15,12,41,.6); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 16px; width: 680px; max-width: 95vw;
+      max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,.35);
+      animation: modalIn .25s ease-out;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(24px) scale(.97); } to { opacity: 1; transform: none; } }
+    .modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #0f0c29, #302b63); border-radius: 16px 16px 0 0;
+    }
+    .modal-head h2 { color: #fff; font-size: 1.1rem; font-weight: 700; }
+    .modal-close {
+      width: 32px; height: 32px; border-radius: 8px; border: none;
+      background: rgba(255,255,255,.15); color: #fff; font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,.3); }
+    .modal-body { padding: 24px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-row.full { grid-template-columns: 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); }
+    .form-group label .req { color: #ef4444; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 0.88rem; color: var(--text); outline: none; font-family: inherit;
+      transition: border-color .15s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #7c3aed; }
+    .form-group textarea { resize: vertical; min-height: 70px; }
+    .form-group .hint { font-size: 0.7rem; color: #94a3b8; margin-top: 2px; }
+    .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .btn-cancel {
+      padding: 8px 20px; border-radius: 8px; border: 1.5px solid var(--border);
+      background: #fff; color: var(--text); font-size: 0.88rem; cursor: pointer; transition: all .15s;
+    }
+    .btn-cancel:hover { background: #f1f5f9; }
+    .btn-save {
+      padding: 8px 24px; border-radius: 8px; border: none;
+      background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #fff;
+      font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all .15s;
+    }
+    .btn-save:hover { background: linear-gradient(135deg, #6d28d9, #5b21b6); }
+    .btn-geo {
+      padding: 8px 14px; border-radius: 8px; border: 1.5px solid #7c3aed;
+      background: #ede9fe; color: #7c3aed; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap; transition: all .15s; display: flex;
+      align-items: center; gap: 5px; flex-shrink: 0;
+    }
+    .btn-geo:hover { background: #7c3aed; color: #fff; }
+    .btn-geo.loading { opacity: .6; pointer-events: none; }
+    .geo-status {
+      font-size: 0.75rem; margin-top: 4px; min-height: 18px;
+    }
+    .geo-status.success { color: #059669; }
+    .geo-status.error { color: #ef4444; }
+    .geo-status .geo-coords { color: #64748b; font-style: italic; }
+    .form-error { color: #ef4444; font-size: 0.75rem; margin-top: 2px; display: none; }
+    .form-group.invalid input, .form-group.invalid select { border-color: #ef4444; }
+    .form-group.invalid .form-error { display: block; }
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #059669; color: #fff; padding: 12px 24px; border-radius: 10px;
+      font-size: 0.88rem; font-weight: 600; box-shadow: 0 8px 32px rgba(0,0,0,.25);
+      z-index: 3000; display: none; animation: toastIn .3s ease-out;
+    }
+    .toast.show { display: block; }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(16px); } to { opacity: 1; transform: translateX(-50%) none; } }
+    /* ── HELP BUTTON ── */
+    .help-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.1); color: #a5b4fc; font-size: 1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all .18s; flex-shrink: 0;
+    }
+    .help-btn:hover { background: rgba(255,255,255,.25); color: #fff; }
+    /* ── HELP MODAL ── */
+    .help-overlay {
+      display: none; position: fixed; inset: 0; z-index: 2500;
+      background: rgba(15,12,41,.55); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .help-overlay.open { display: flex; }
+    .help-modal {
+      background: #fff; border-radius: 16px; width: 620px; max-width: 95vw;
+      max-height: 88vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,.35);
+      animation: modalIn .25s ease-out;
+    }
+    .help-modal::-webkit-scrollbar { width: 6px; }
+    .help-modal::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .help-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #0f0c29, #302b63); border-radius: 16px 16px 0 0;
+    }
+    .help-head h2 { color: #fff; font-size: 1.1rem; font-weight: 700; }
+    .help-body { padding: 24px; }
+    .help-section { margin-bottom: 22px; }
+    .help-section:last-child { margin-bottom: 0; }
+    .help-section h3 {
+      font-size: 0.92rem; font-weight: 700; color: var(--text);
+      margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+    }
+    .help-section h3 .help-icon {
+      width: 28px; height: 28px; border-radius: 8px; display: inline-flex;
+      align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;
+    }
+    .help-section p, .help-section ul {
+      font-size: 0.83rem; color: var(--text-muted); line-height: 1.6; margin-left: 36px;
+    }
+    .help-section ul { padding-left: 16px; }
+    .help-section ul li { margin-bottom: 4px; }
+    .help-section ul li strong { color: var(--text); }
+    .help-kbd {
+      display: inline-block; padding: 1px 6px; border-radius: 4px;
+      background: #f1f5f9; border: 1px solid #d1d5db; font-size: 0.75rem;
+      font-family: monospace; color: var(--text); vertical-align: middle;
+    }
+    .help-tag-demo {
+      display: inline-block; padding: 2px 8px; border-radius: 8px;
+      background: #f1f5f9; border: 1px solid #e2e8f0; font-size: 0.72rem;
+      color: #475569; cursor: default;
+    }
+    .help-tag-active {
+      background: #7c3aed; color: #fff; border-color: #7c3aed;
+    }
+    .help-divider { height: 1px; background: var(--border); margin: 18px 0; }
+    .help-footer {
+      padding: 16px 24px; border-top: 1px solid var(--border);
+      text-align: center; color: var(--text-muted); font-size: 0.78rem;
+    }
+    /* ── COOKIE BANNER ── */
+    .cookie-banner {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 5000;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 70%, #24243e 100%);
+      color: #e2e8f0; padding: 0;
+      box-shadow: 0 -4px 32px rgba(0,0,0,.4);
+      transform: translateY(100%);
+      transition: transform .4s ease-out;
+    }
+    .cookie-banner.visible { transform: translateY(0); }
+    .cookie-inner {
+      max-width: 1100px; margin: 0 auto;
+      padding: 20px 28px; display: flex; align-items: flex-start; gap: 20px;
+    }
+    .cookie-icon { font-size: 2rem; flex-shrink: 0; margin-top: 2px; }
+    .cookie-text { flex: 1; }
+    .cookie-text h3 { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .cookie-text p { font-size: 0.82rem; line-height: 1.6; color: #cbd5e1; }
+    .cookie-text a { color: #a5b4fc; text-decoration: underline; }
+    .cookie-text a:hover { color: #c4b5fd; }
+    .cookie-actions { display: flex; gap: 10px; flex-shrink: 0; align-items: center; margin-top: 4px; }
+    .cookie-btn {
+      padding: 9px 22px; border-radius: 8px; font-size: 0.84rem; font-weight: 600;
+      cursor: pointer; border: none; transition: all .15s;
+    }
+    .cookie-accept { background: #059669; color: #fff; }
+    .cookie-accept:hover { background: #047857; }
+    .cookie-decline { background: rgba(255,255,255,.1); color: #e2e8f0; border: 1px solid rgba(255,255,255,.2); }
+    .cookie-decline:hover { background: rgba(255,255,255,.2); }
+    .cookie-settings-btn {
+      background: none; border: none; color: #94a3b8; font-size: 0.78rem;
+      cursor: pointer; text-decoration: underline; padding: 0;
+    }
+    .cookie-settings-btn:hover { color: #e2e8f0; }
+    /* ── LEGAL FOOTER ── */
+    .legal-footer {
+      position: fixed; bottom: 0; left: 0; z-index: 900;
+      display: flex; gap: 6px; padding: 6px 12px;
+      background: rgba(255,255,255,.92); border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border); border-radius: 0 8px 0 0;
+      backdrop-filter: blur(6px);
+    }
+    .legal-footer a {
+      font-size: 0.7rem; color: var(--muted); text-decoration: none;
+      padding: 2px 8px; border-radius: 4px; transition: all .12s;
+    }
+    .legal-footer a:hover { background: #f1f5f9; color: var(--text); }
+    /* ── RESPONSIVE ── */
+
+    /* Tablet landscape & small desktops */
+    @media (max-width: 1100px) {
+      #map { flex: 0 0 45%; }
+      .header-search { min-width: 200px; }
+    }
+
+    /* Tablet portrait */
+    @media (max-width: 900px) {
+      :root { --header-h: auto; --filter-h: auto; }
+      header {
+        flex-wrap: wrap; gap: 10px; padding: 12px 16px; height: auto;
+        position: relative;
+      }
+      .header-left { flex: 1 1 auto; min-width: 0; }
+      .header-title { font-size: 1.05rem; }
+      .header-sub { font-size: 0.68rem; }
+      .header-search { order: 3; flex: 1 1 100%; min-width: 0; }
+      .header-right { flex-wrap: wrap; gap: 6px; }
+      .stat-badge { display: none; }
+      .filter-bar {
+        position: relative; top: auto; height: auto;
+        flex-wrap: wrap; padding: 10px 16px; gap: 6px;
+      }
+      .main-wrapper {
+        position: relative; top: auto;
+        flex-direction: column; overflow-y: auto; height: auto;
+        min-height: 0;
+      }
+      html, body { height: auto; overflow: auto; }
+      #map { flex: none; height: 45vh; width: 100%; min-height: 280px; }
+      .cards-panel { height: auto; overflow-y: visible; padding: 12px; }
+      .cookie-inner { flex-direction: column; gap: 12px; padding: 16px 20px; }
+      .cookie-actions { width: 100%; justify-content: flex-end; }
+      .legal-footer { position: relative; width: 100%; border-radius: 0; justify-content: center; border-right: none; }
+      .modal { max-width: 96vw; }
+      .form-row { grid-template-columns: 1fr; }
+      .card-details { grid-template-columns: 1fr; }
+      .card-desc { margin-left: 0; }
+      .card-details { margin-left: 0; }
+      .card-tags { margin-left: 0; }
+      .card-links { margin-left: 0; }
+    }
+
+    /* Mobile phones */
+    @media (max-width: 600px) {
+      header { padding: 10px 12px; gap: 8px; }
+      .logo-icon { font-size: 22px; }
+      .header-title { font-size: 0.95rem; }
+      .header-sub { font-size: 0.63rem; }
+      .header-search { padding: 5px 10px; }
+      .header-search input { font-size: 0.82rem; }
+      .header-right { gap: 5px; }
+      .add-btn { padding: 5px 12px; font-size: 0.78rem; margin-left: 0; }
+      .help-btn { width: 32px; height: 32px; font-size: 0.88rem; }
+      .filter-bar { padding: 8px 12px; gap: 5px; }
+      .filter-btn { padding: 5px 10px; font-size: 0.75rem; gap: 4px; }
+      .filter-label { font-size: 0.72rem; }
+      .city-select { font-size: 0.78rem; padding: 5px 8px; }
+      #map { height: 38vh; min-height: 220px; }
+      .cards-panel { padding: 10px 8px; }
+      .card { padding: 12px 10px; margin-bottom: 10px; border-radius: 10px; }
+      .card-header { gap: 8px; margin-left: 6px; }
+      .card-icon { width: 36px; height: 36px; font-size: 1rem; }
+      .card-name { font-size: 0.9rem; }
+      .badge { font-size: 0.65rem; padding: 2px 6px; }
+      .card-desc { font-size: 0.8rem; margin-left: 0; margin-top: 8px; }
+      .card-details { margin-left: 0; margin-top: 8px; }
+      .card-tags { margin-left: 0; margin-top: 8px; }
+      .card-links { margin-left: 0; margin-top: 8px; }
+      .detail-item { font-size: 0.74rem; }
+      .tag { font-size: 0.66rem; padding: 2px 7px; }
+      .card-link { font-size: 0.72rem; padding: 3px 8px; }
+      .active-tag-bar { padding: 6px 10px; gap: 6px; flex-wrap: wrap; }
+      .active-tag-bar .atb-label { font-size: 0.72rem; }
+      .active-tag-bar .atb-tag { font-size: 0.7rem; padding: 2px 8px; }
+      .active-tag-bar .atb-clear { font-size: 0.7rem; padding: 2px 8px; }
+      .modal { max-width: 100vw; border-radius: 12px; margin: 8px; }
+      .modal-head { padding: 14px 16px; }
+      .modal-head h2 { font-size: 0.95rem; }
+      .modal-body { padding: 16px; }
+      .form-group label { font-size: 0.74rem; }
+      .form-group input, .form-group select, .form-group textarea { font-size: 0.84rem; padding: 7px 10px; }
+      .btn-cancel, .btn-save { font-size: 0.82rem; padding: 7px 16px; }
+      .btn-geo { font-size: 0.78rem; padding: 7px 10px; }
+      .help-modal { max-width: 100vw; margin: 8px; border-radius: 12px; }
+      .help-head { padding: 14px 16px; }
+      .help-head h2 { font-size: 0.95rem; }
+      .help-body { padding: 16px; }
+      .help-section h3 { font-size: 0.85rem; }
+      .help-section p, .help-section ul { font-size: 0.78rem; margin-left: 0; }
+      .help-footer { font-size: 0.72rem; padding: 12px 16px; }
+      .cookie-inner { padding: 14px 14px; gap: 10px; }
+      .cookie-icon { font-size: 1.5rem; }
+      .cookie-text h3 { font-size: 0.85rem; }
+      .cookie-text p { font-size: 0.76rem; }
+      .cookie-btn { padding: 7px 16px; font-size: 0.78rem; }
+      .cookie-actions { flex-wrap: wrap; }
+      .legal-footer a { font-size: 0.65rem; padding: 2px 6px; }
+      .no-results i { font-size: 2rem; }
+      .no-results h3 { font-size: 0.95rem; }
+      .results-count { font-size: 0.78rem; }
+    }
+
+    /* Very small screens */
+    @media (max-width: 380px) {
+      .header-title { font-size: 0.85rem; }
+      .add-btn span { display: none; }
+      .filter-btn i { margin-right: 0; }
+      .filter-btn { padding: 4px 8px; font-size: 0.7rem; }
+      .card { padding: 10px 8px; }
+    }
+  </style>
+</head>
+<body>
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="header-left">
+    <div class="logo-icon">&#x1f1e9;&#x1f1ea;</div>
+    <div>
+      <div class="header-title">KI-Landschaft in Deutschland</div>
+      <div class="header-sub">Startups &middot; Unternehmen &middot; Rechenzentren &middot; Stand <span id="headerDate"></span></div>
+    </div>
+  </div>
+  <div class="header-search">
+    <i class="fa fa-search"></i>
+    <input id="searchInput" type="text" placeholder="Unternehmen, Branche, Stadt suchen &hellip;" />
+  </div>
+  <div class="header-right">
+    <div class="stat-badge"><span id="totalCount">45</span> Eintr&auml;ge</div>
+    <div class="stat-badge" style="background:rgba(124,58,237,.25);border-color:rgba(124,58,237,.4);color:#c4b5fd"><span id="hdrStartup">20</span> Startups</div>
+    <div class="stat-badge" style="background:rgba(29,78,216,.25);border-color:rgba(29,78,216,.4);color:#93c5fd"><span id="hdrCompany">15</span> Unternehmen</div>
+    <div class="stat-badge" style="background:rgba(5,150,105,.25);border-color:rgba(5,150,105,.4);color:#6ee7b7"><span id="hdrDC">10</span> Rechenzentren</div>
+    <button class="add-btn" onclick="openModal()"><i class="fa fa-plus"></i> Neu</button>
+    <button class="help-btn" onclick="openHelp()" title="Hilfe"><i class="fa fa-question-circle"></i></button>
+  </div>
+</header>
+<!-- ══ FILTER BAR ══ -->
+<div class="filter-bar">
+  <span class="filter-label"><i class="fa fa-sliders-h" style="margin-right:4px"></i>Filter:</span>
+  <button class="filter-btn all active" data-filter="all">
+    <i class="fa fa-globe"></i> Alle <span class="filter-count" id="cnt-all">45</span>
+  </button>
+  <button class="filter-btn startup" data-filter="startup">
+    <i class="fa fa-rocket"></i> KI-Startups <span class="filter-count" id="cnt-startup">20</span>
+  </button>
+  <button class="filter-btn company" data-filter="company">
+    <i class="fa fa-building"></i> Unternehmen <span class="filter-count" id="cnt-company">15</span>
+  </button>
+  <button class="filter-btn datacenter" data-filter="datacenter">
+    <i class="fa fa-server"></i> Rechenzentren <span class="filter-count" id="cnt-datacenter">10</span>
+  </button>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Stadt:</span>
+  <select class="city-select" id="cityFilter">
+    <option value="all">Alle St&auml;dte</option>
+    <option>Berlin</option>
+    <option>M&uuml;nchen</option>
+    <option>Frankfurt</option>
+    <option>Hamburg</option>
+    <option>K&ouml;ln</option>
+    <option>Stuttgart</option>
+    <option>D&uuml;sseldorf</option>
+    <option>Heidelberg</option>
+    <option>Walldorf</option>
+    <option>Wolfsburg</option>
+    <option>Bonn</option>
+    <option>Karlsruhe</option>
+    <option>N&uuml;rnberg</option>
+    <option>Falkenstein</option>
+    <option>Ludwigshafen</option>
+  </select>
+</div>
+<!-- ══ MAIN ══ -->
+<div class="main-wrapper">
+  <div id="map"></div>
+  <div class="cards-panel">
+    <div class="results-header">
+      <span class="results-count">Zeige <strong id="visibleCount">45</strong> Eintr&auml;ge</span>
+      <span style="font-size:.78rem;color:var(--text-muted)"><i class="fa fa-info-circle"></i> Klicken zum Hervorheben auf der Karte</span>
+    </div>
+    <div class="active-tag-bar" id="activeTagBar">
+      <span class="atb-label"><i class="fa fa-tag" style="margin-right:4px"></i>Tag-Filter:</span>
+      <span class="atb-tag" id="activeTagName"></span>
+      <span class="atb-clear" onclick="clearTagFilter()"><i class="fa fa-times" style="margin-right:3px"></i>Aufheben</span>
+    </div>
+    <div id="cardsContainer"></div>
+    <div class="no-results" id="noResults" style="display:none">
+      <i class="fa fa-search"></i>
+      <h3>Keine Ergebnisse gefunden</h3>
+      <p>Bitte passen Sie die Suchkriterien an.</p>
+    </div>
+  </div>
+</div>
+<!-- ══ MODAL: Neuen Eintrag hinzufügen ══ -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <h2><i class="fa fa-plus-circle" style="margin-right:8px"></i>Neuen Eintrag hinzuf&uuml;gen</h2>
+      <button class="modal-close" onclick="closeModal()"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="addForm" onsubmit="return handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Name <span class="req">*</span></label>
+            <input type="text" id="f-name" placeholder="z.B. Musterfirma GmbH" required />
+            <span class="form-error">Bitte Name eingeben</span>
+          </div>
+          <div class="form-group">
+            <label>Typ <span class="req">*</span></label>
+            <select id="f-type" required>
+              <option value="">Bitte w&auml;hlen&hellip;</option>
+              <option value="startup">KI-Startup</option>
+              <option value="company">Unternehmen</option>
+              <option value="datacenter">Rechenzentrum</option>
+            </select>
+            <span class="form-error">Bitte Typ w&auml;hlen</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Branche <span class="req">*</span></label>
+            <input type="text" id="f-branche" placeholder="z.B. NLP / Machine Learning" required />
+            <span class="form-error">Bitte Branche eingeben</span>
+          </div>
+          <div class="form-group">
+            <label>Stadt oder PLZ <span class="req">*</span></label>
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <input type="text" id="f-stadt" placeholder="z.B. Berlin oder 10115" required style="flex:1" />
+              <button type="button" class="btn-geo" id="btnGeo" onclick="geocodeCity()"><i class="fa fa-map-marker-alt"></i> Orten</button>
+            </div>
+            <span class="form-error" id="f-stadt-error">Bitte Stadt oder PLZ eingeben</span>
+            <div class="geo-status" id="geoStatus"></div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Gr&uuml;ndungsjahr</label>
+            <input type="number" id="f-year" placeholder="z.B. 2020" />
+          </div>
+          <div class="form-group">
+            <label>Mitarbeiter</label>
+            <input type="text" id="f-employees" placeholder="z.B. 50-100" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>CEO / Gesch&auml;ftsf&uuml;hrung</label>
+            <input type="text" id="f-ceo" placeholder="z.B. Max Mustermann" />
+          </div>
+          <div class="form-group">
+            <label>Finanzierung</label>
+            <input type="text" id="f-funding" placeholder="z.B. ~ 10 Mio. &euro;" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Website</label>
+            <input type="url" id="f-website" placeholder="https://example.com" />
+          </div>
+          <div class="form-group">
+            <label>LinkedIn</label>
+            <input type="url" id="f-linkedin" placeholder="https://linkedin.com/company/..." />
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Beschreibung <span class="req">*</span></label>
+            <textarea id="f-desc" placeholder="Kurze Beschreibung des Unternehmens und seiner KI-Aktivit&auml;ten&hellip;" required></textarea>
+            <span class="form-error">Bitte Beschreibung eingeben</span>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Tags / Schlagworte</label>
+            <input type="text" id="f-tags" placeholder="z.B. NLP, SaaS, Cloud, DSGVO (kommagetrennt)" />
+            <span class="hint">Mehrere Tags mit Komma trennen</span>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Vernetzung / Branchen</label>
+            <input type="text" id="f-network" placeholder="z.B. Banken, Versicherungen, Pharma" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="closeModal()">Abbrechen</button>
+          <button type="submit" class="btn-save"><i class="fa fa-check" style="margin-right:6px"></i>Eintrag hinzuf&uuml;gen</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"><i class="fa fa-check-circle" style="margin-right:6px"></i>Eintrag erfolgreich hinzugef&uuml;gt!</div>
+
+<!-- ══ HELP MODAL ══ -->
+<div class="help-overlay" id="helpOverlay" onclick="if(event.target===this)closeHelp()">
+  <div class="help-modal">
+    <div class="help-head">
+      <h2><i class="fa fa-question-circle" style="margin-right:8px"></i>Hilfe &ndash; So funktioniert die Seite</h2>
+      <button class="modal-close" onclick="closeHelp()"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="help-body">
+
+      <div class="help-section">
+        <h3><span class="help-icon" style="background:#dbeafe;color:#1d4ed8"><i class="fa fa-map"></i></span> Karte &amp; Navigation</h3>
+        <p>Links sehen Sie eine interaktive Karte mit allen Eintr&auml;gen. Jeder farbige Punkt steht f&uuml;r einen Eintrag:</p>
+        <ul>
+          <li><strong style="color:#7c3aed">Lila</strong> = KI-Startups</li>
+          <li><strong style="color:#1d4ed8">Blau</strong> = Etablierte Unternehmen</li>
+          <li><strong style="color:#059669">Gr&uuml;n</strong> = Rechenzentren</li>
+        </ul>
+        <p style="margin-top:6px">Klicken Sie auf einen Marker, um ein Popup mit Kurzinfos zu &ouml;ffnen. Zoomen und verschieben Sie die Karte per Mausrad oder Touch.</p>
+      </div>
+
+      <div class="help-divider"></div>
+
+      <div class="help-section">
+        <h3><span class="help-icon" style="background:#ede9fe;color:#7c3aed"><i class="fa fa-id-card"></i></span> Unternehmens-Karten (rechte Seite)</h3>
+        <p>Rechts neben der Karte finden Sie Detail-Karten zu jedem Eintrag &ndash; mit Branche, Beschreibung, Mitarbeiterzahl, CEO, Tags und Links.</p>
+        <ul>
+          <li><strong>Klick auf eine Karte</strong> &ndash; Die Karte zoomt zum entsprechenden Marker und hebt ihn hervor.</li>
+          <li><strong>Website / LinkedIn / Karte</strong> &ndash; Links am unteren Rand jeder Karte f&uuml;hren direkt zu den externen Seiten.</li>
+        </ul>
+      </div>
+
+      <div class="help-divider"></div>
+
+      <div class="help-section">
+        <h3><span class="help-icon" style="background:#fef3c7;color:#92400e"><i class="fa fa-tag"></i></span> Klickbare Tags (Schlagworte)</h3>
+        <p>Jede Karte zeigt Tags wie z.B.
+          <span class="help-tag-demo">NLP</span>
+          <span class="help-tag-demo">IoT</span>
+          <span class="help-tag-demo">DSGVO</span>. Diese sind <strong>anklickbar</strong>:</p>
+        <ul>
+          <li><strong>Klick auf einen Tag</strong> &ndash; Filtert die Ansicht sofort auf alle Eintr&auml;ge, die diesen Tag teilen. Der aktive Tag wird lila hervorgehoben: <span class="help-tag-demo help-tag-active">NLP</span></li>
+          <li>Ein <strong>lila Balken</strong> erscheint &uuml;ber den Karten und zeigt den aktiven Tag-Filter an.</li>
+          <li><strong>Erneuter Klick</strong> auf denselben Tag oder auf &bdquo;Aufheben&ldquo; setzt den Filter zur&uuml;ck.</li>
+        </ul>
+      </div>
+
+      <div class="help-divider"></div>
+
+      <div class="help-section">
+        <h3><span class="help-icon" style="background:#d1fae5;color:#059669"><i class="fa fa-filter"></i></span> Filter &amp; Suche</h3>
+        <ul>
+          <li><strong>Suchfeld</strong> (oben Mitte) &ndash; Freitextsuche &uuml;ber Name, Branche, Stadt, Beschreibung und Tags.</li>
+          <li><strong>Typ-Filter</strong> (Filterleiste) &ndash; W&auml;hlen Sie zwischen &bdquo;Alle&ldquo;, &bdquo;KI-Startups&ldquo;, &bdquo;Unternehmen&ldquo; oder &bdquo;Rechenzentren&ldquo;.</li>
+          <li><strong>Stadt-Dropdown</strong> &ndash; Schr&auml;nkt die Anzeige auf eine bestimmte Stadt ein.</li>
+          <li>Alle Filter lassen sich <strong>kombinieren</strong> &ndash; z.B. nur Startups in Berlin mit Tag &bdquo;DSGVO&ldquo;.</li>
+        </ul>
+      </div>
+
+      <div class="help-divider"></div>
+
+      <div class="help-section">
+        <h3><span class="help-icon" style="background:#ede9fe;color:#7c3aed"><i class="fa fa-plus-circle"></i></span> Neuen Eintrag hinzuf&uuml;gen</h3>
+        <p>Klicken Sie auf den <strong>&bdquo;+ Neu&ldquo;-Button</strong> oben rechts in der Kopfzeile. Es &ouml;ffnet sich ein Formular:</p>
+        <ul>
+          <li>Geben Sie <strong>Name, Typ, Branche und Stadt/PLZ</strong> ein (Pflichtfelder mit *).</li>
+          <li>Die <strong>Koordinaten werden automatisch ermittelt</strong>: Geben Sie eine Stadt oder Postleitzahl ein &ndash; das Geocoding l&auml;uft &uuml;ber OpenStreetMap (Nominatim).</li>
+          <li>Der <strong>&bdquo;Orten&ldquo;-Button</strong> l&ouml;st die Suche manuell aus. Alternativ werden die Koordinaten auch automatisch ermittelt, wenn Sie das Feld verlassen oder <span class="help-kbd">Enter</span> dr&uuml;cken.</li>
+          <li>Bei Eingabe einer <strong>PLZ</strong> wird der Stadtname automatisch aufgel&ouml;st.</li>
+          <li>Tags mit <strong>Komma trennen</strong>, z.B. &bdquo;NLP, SaaS, Cloud&ldquo;.</li>
+          <li>Nach dem Speichern erscheint der Eintrag sofort auf der Karte und in der Liste.</li>
+        </ul>
+      </div>
+
+      <div class="help-divider"></div>
+
+      <div class="help-section">
+        <h3><span class="help-icon" style="background:#dbeafe;color:#1d4ed8"><i class="fa fa-chart-bar"></i></span> Statistiken</h3>
+        <p>In der Kopfzeile sehen Sie Badges mit der Gesamtanzahl der Eintr&auml;ge, aufgeschl&uuml;sselt nach Startups, Unternehmen und Rechenzentren. Diese aktualisieren sich automatisch, wenn Sie neue Eintr&auml;ge hinzuf&uuml;gen.</p>
+      </div>
+
+    </div>
+    <div class="help-footer">
+      <i class="fa fa-lightbulb" style="margin-right:4px;color:#f59e0b"></i>
+      Tipp: Nutzen Sie die Tag-Filter, um Unternehmen mit &auml;hnlichen Technologien schnell zu finden!
+    </div>
+  </div>
+</div>
+
+<!-- ══ COOKIE BANNER ══ -->
+<div class="cookie-banner" id="cookieBanner">
+  <div class="cookie-inner">
+    <div class="cookie-icon">&#x1f36a;</div>
+    <div class="cookie-text">
+      <h3>Datenschutz-Einstellungen</h3>
+      <p>Diese Website verwendet <strong>keine Tracking- oder Marketing-Cookies</strong>. Wir speichern lediglich Ihre Cookie-Entscheidung lokal in Ihrem Browser (localStorage). Externe Dienste wie Kartenkacheln (CARTO/OpenStreetMap) und Icons (cdnjs/Cloudflare) werden zur Darstellung geladen. Mehr erfahren Sie in unserer <a href="datenschutz.html">Datenschutzerkl&auml;rung</a>.</p>
+    </div>
+    <div class="cookie-actions">
+      <button class="cookie-btn cookie-accept" onclick="acceptCookies()"><i class="fa fa-check" style="margin-right:5px"></i>Einverstanden</button>
+      <button class="cookie-btn cookie-decline" onclick="declineCookies()">Nur essenzielle</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LEGAL FOOTER ══ -->
+<div class="legal-footer">
+  <a href="impressum.html"><i class="fa fa-file-alt" style="margin-right:3px"></i>Impressum</a>
+  <a href="datenschutz.html"><i class="fa fa-shield-alt" style="margin-right:3px"></i>Datenschutz</a>
+  <a href="javascript:void(0)" onclick="reopenCookieBanner()" style="cursor:pointer"><i class="fa fa-cookie-bite" style="margin-right:3px"></i>Cookies</a>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+// ══════════════════════════════════════════════════════
+//  D A T A
+// ══════════════════════════════════════════════════════
+let DATA = [
+  // ── KI-STARTUPS ──
+  {
+    id: 1, type: 'startup',
+    name: 'Aleph Alpha',
+    branche: 'Foundation Models / LLM',
+    stadt: 'Heidelberg',
+    koordinaten: [49.399, 8.673],
+    gegründet: 2019,
+    mitarbeiter: '200–350',
+    finanzierung: '~ 500 Mio. \u20ac',
+    ceo: 'Jonas Andrulis',
+    website: 'https://aleph-alpha.com',
+    linkedin: 'https://linkedin.com/company/aleph-alpha',
+    beschreibung: 'Europ\u00e4ischer Anbieter von souver\u00e4nen Large Language Models (LLMs). Entwickelt Luminous-Modelle und bietet eine EU-konforme AI-Cloud f\u00fcr Unternehmen und Beh\u00f6rden. Strategischer Partner der Bundesregierung.',
+    tags: ['LLM', 'Souver\u00e4ne KI', 'Enterprise AI', 'Government', 'Forschung', 'EU AI Act'],
+    vernetzung: '\u00d6ffentlicher Sektor, Enterprise Software, R\u00fcstung/Sicherheit, Wissenschaft'
+  },
+  {
+    id: 2, type: 'startup',
+    name: 'DeepL',
+    branche: 'KI-\u00dcbersetzung / NLP',
+    stadt: 'K\u00f6ln',
+    koordinaten: [50.943, 6.960],
+    gegründet: 2017,
+    mitarbeiter: '700–900',
+    finanzierung: '~ 100 Mio. $ (Unicorn)',
+    ceo: 'Jaroslaw Kutylowski',
+    website: 'https://deepl.com',
+    linkedin: 'https://linkedin.com/company/deepl-se',
+    beschreibung: 'Weltmarktf\u00fchrer f\u00fcr neuronale maschinelle \u00dcbersetzung. DeepL Translator und DeepL Write werden von \u00fcber 100.000 Unternehmen in 28 Sprachen genutzt. API-Zugang f\u00fcr Gesch\u00e4ftskunden.',
+    tags: ['NLP', '\u00dcbersetzung', 'B2B API', 'SaaS', 'Mehrsprachigkeit'],
+    vernetzung: 'Verlage, Rechtsabteilungen, E-Commerce, Finanzdienstleistungen, Beh\u00f6rden'
+  },
+  {
+    id: 3, type: 'startup',
+    name: 'Celonis',
+    branche: 'Process Mining / AI',
+    stadt: 'M\u00fcnchen',
+    koordinaten: [48.140, 11.560],
+    gegründet: 2011,
+    mitarbeiter: '3 000+',
+    finanzierung: '~ 2,4 Mrd. $ (Unicorn, ~13 Mrd. $ Bewertung)',
+    ceo: 'Alexander Rinke',
+    website: 'https://celonis.com',
+    linkedin: 'https://linkedin.com/company/celonis',
+    beschreibung: 'Weltmarktf\u00fchrer f\u00fcr Process Mining und Execution Management. KI analysiert Gesch\u00e4ftsprozesse aus ERP-, CRM- und weiteren Systemen und deckt Ineffizienzen auf. SAP-Partner.',
+    tags: ['Process Mining', 'ERP', 'SAP', 'Operational Excellence', 'Supply Chain'],
+    vernetzung: 'Produktion, Logistik, Finanzdienstleistungen, Pharma, Gro\u00dfunternehmen'
+  },
+  {
+    id: 4, type: 'startup',
+    name: 'Cognigy',
+    branche: 'Conversational AI / Voicebot',
+    stadt: 'D\u00fcsseldorf',
+    koordinaten: [51.228, 6.782],
+    gegründet: 2016,
+    mitarbeiter: '300–400',
+    finanzierung: '~ 169 Mio. $',
+    ceo: 'Philipp Heltewig',
+    website: 'https://cognigy.com',
+    linkedin: 'https://linkedin.com/company/cognigy',
+    beschreibung: 'Enterprise-Plattform f\u00fcr KI-gest\u00fctzte Customer-Service-Automatisierung via Chat und Telefon. Integriert mit Salesforce, SAP, Genesys und anderen CRM-Systemen.',
+    tags: ['Chatbot', 'Voicebot', 'Customer Service', 'CRM-Integration', 'Omnichannel'],
+    vernetzung: 'Telekommunikation, Banking, Versicherungen, Retail, Healthcare'
+  },
+  {
+    id: 5, type: 'startup',
+    name: 'Parloa',
+    branche: 'AI Phone Agents',
+    stadt: 'Berlin',
+    koordinaten: [52.530, 13.410],
+    gegründet: 2017,
+    mitarbeiter: '150–250',
+    finanzierung: '~ 66 Mio. \u20ac',
+    ceo: 'Malte Kosub',
+    website: 'https://parloa.com',
+    linkedin: 'https://linkedin.com/company/parloa',
+    beschreibung: 'KI-Plattform f\u00fcr automatisierte Telefongespr\u00e4che im Kundenservice. Nat\u00fcrliche Sprachverarbeitung in Echtzeit erm\u00f6glicht menschen\u00e4hnliche Dialoge. Fokus auf DSGVO-Konformit\u00e4t.',
+    tags: ['Voice AI', 'Call Center', 'Customer Experience', 'DSGVO', 'Telephony'],
+    vernetzung: 'Contact Center, Versicherungen, Handel, Utilities, Gesundheitswesen'
+  },
+  {
+    id: 6, type: 'startup',
+    name: 'Merantix',
+    branche: 'KI Venture Builder',
+    stadt: 'Berlin',
+    koordinaten: [52.520, 13.390],
+    gegründet: 2016,
+    mitarbeiter: '200+',
+    finanzierung: 'Nicht \u00f6ffentlich',
+    ceo: 'Adrian Locher',
+    website: 'https://merantix.com',
+    linkedin: 'https://linkedin.com/company/merantix',
+    beschreibung: 'Europas f\u00fchrender KI-Venture-Builder mit eigenem KI-Campus in Berlin. Baut und investiert in B2B-KI-Unternehmen in den Bereichen Healthcare, Industrie und Unternehmensanwendungen.',
+    tags: ['Venture Builder', 'B2B AI', 'Healthcare AI', 'Industrial AI', 'VC'],
+    vernetzung: 'Startups, Investoren, Industrieunternehmen, Krankenh\u00e4user, Forschungsinstitute'
+  },
+  {
+    id: 7, type: 'startup',
+    name: 'Konux',
+    branche: 'Industrial AI / Railway',
+    stadt: 'M\u00fcnchen',
+    koordinaten: [48.155, 11.590],
+    gegründet: 2014,
+    mitarbeiter: '150+',
+    finanzierung: '~ 100 Mio. $',
+    ceo: 'Andreas N\u00fc\u00dfler',
+    website: 'https://konux.com',
+    linkedin: 'https://linkedin.com/company/konux',
+    beschreibung: 'Predictive-Maintenance-Plattform f\u00fcr Eisenbahninfrastruktur. IoT-Sensoren und KI prognostizieren Ausf\u00e4lle von Weichen bis zu 4 Monate im Voraus. Kunden: DB Netz, Network Rail.',
+    tags: ['Predictive Maintenance', 'IoT', 'Railway', 'Infrastructure', 'Sensor Data'],
+    vernetzung: 'Bahnbetreiber, Infrastrukturgesellschaften, Bau, Versicherungen'
+  },
+  {
+    id: 8, type: 'startup',
+    name: 'Hawk AI',
+    branche: 'Anti-Financial-Crime AI',
+    stadt: 'Hamburg',
+    koordinaten: [53.553, 9.992],
+    gegründet: 2018,
+    mitarbeiter: '100–150',
+    finanzierung: '~ 30 Mio. $',
+    ceo: 'Wolfgang Berner',
+    website: 'https://hawk.ai',
+    linkedin: 'https://linkedin.com/company/hawk-ai',
+    beschreibung: 'KI-Plattform zur Bek\u00e4mpfung von Geldw\u00e4sche (AML) und Finanzbetrug. Reduziert False-Positives bei der Transaktions\u00fcberwachung um bis zu 70 %. Lizenziert in EU und USA.',
+    tags: ['AML', 'Fraud Detection', 'RegTech', 'FinTech', 'Compliance', 'Banking'],
+    vernetzung: 'Banken, Zahlungsdienstleister, Compliance-Abteilungen, BaFin-regulierte Institute'
+  },
+  {
+    id: 9, type: 'startup',
+    name: 'Qdrant',
+    branche: 'Vector Database / AI Infrastructure',
+    stadt: 'Berlin',
+    koordinaten: [52.510, 13.420],
+    gegründet: 2021,
+    mitarbeiter: '60–100',
+    finanzierung: '~ 28 Mio. $',
+    ceo: 'Andrei Vasnetsov',
+    website: 'https://qdrant.tech',
+    linkedin: 'https://linkedin.com/company/qdrant',
+    beschreibung: 'Open-Source-Vektordatenbank f\u00fcr KI-Anwendungen mit semantischer Suche, Empfehlungssystemen und RAG-Architekturen. Cloud-native, in Rust geschrieben \u2013 hohe Leistung bei gro\u00dfen Datenmengen.',
+    tags: ['Vector DB', 'Open Source', 'RAG', 'Semantic Search', 'AI Infrastructure', 'Rust'],
+    vernetzung: 'KI-Entwickler, MLOps, E-Commerce, Medien, Research'
+  },
+  {
+    id: 10, type: 'startup',
+    name: 'Helsing',
+    branche: 'Defense AI',
+    stadt: 'M\u00fcnchen',
+    koordinaten: [48.130, 11.570],
+    gegründet: 2021,
+    mitarbeiter: '300+',
+    finanzierung: '~ 209 Mio. \u20ac',
+    ceo: 'Gundbert Scherf',
+    website: 'https://helsing.ai',
+    linkedin: 'https://linkedin.com/company/helsing',
+    beschreibung: 'Europ\u00e4isches R\u00fcstungs-KI-Unternehmen. Entwickelt Software zur Erkennung, Klassifikation und Lagebewertung f\u00fcr Milit\u00e4r und Sicherheitsbeh\u00f6rden. Partner des Bundesverteidigungsministeriums.',
+    tags: ['Defense', 'Computer Vision', 'Surveillance', 'NATO', 'Government', 'Dual Use'],
+    vernetzung: 'Bundeswehr, NATO, R\u00fcstungsindustrie, Sicherheitsbeh\u00f6rden'
+  },
+  {
+    id: 11, type: 'startup',
+    name: 'Micropsi Industries',
+    branche: 'Robot AI / Maschinenlernen',
+    stadt: 'Berlin',
+    koordinaten: [52.535, 13.430],
+    gegründet: 2014,
+    mitarbeiter: '80–120',
+    finanzierung: '~ 30 Mio. $',
+    ceo: 'Ronnie Vuine',
+    website: 'https://micropsi-industries.com',
+    linkedin: 'https://linkedin.com/company/micropsi-industries',
+    beschreibung: 'MIRAI ist eine KI-Software, die Industrierobotern Hand-Auge-Koordination beibringt \u2013 durch menschliches Vorzeigen, ohne Programmierung. Einsatz in Automobil, Elektronik, Medizintechnik.',
+    tags: ['Robotik', 'Computer Vision', 'Imitation Learning', 'Fertigung', 'Automotive'],
+    vernetzung: 'Automobilindustrie, Elektronikfertigung, Systemintegratoren, Maschinenbau'
+  },
+  {
+    id: 12, type: 'startup',
+    name: 'Fraugster',
+    branche: 'Fraud Prevention AI',
+    stadt: 'Berlin',
+    koordinaten: [52.524, 13.415],
+    gegründet: 2014,
+    mitarbeiter: '100–150',
+    finanzierung: '~ 27 Mio. \u20ac',
+    ceo: 'Max Laemmle',
+    website: 'https://fraugster.com',
+    linkedin: 'https://linkedin.com/company/fraugster',
+    beschreibung: 'Echtzeit-Betrugserkennung f\u00fcr Online-Zahlungen mittels KI. Analyse von \u00fcber 2.000 Datenpunkten pro Transaktion in unter 15 ms. Partner von PayPal, Mastercard und f\u00fchrenden Acquiring-Banken.',
+    tags: ['Fraud Prevention', 'Payments', 'FinTech', 'Real-time AI', 'E-Commerce'],
+    vernetzung: 'Zahlungsabwickler, Online-H\u00e4ndler, Banken, Acquirer'
+  },
+  {
+    id: 13, type: 'startup',
+    name: 'Quantco',
+    branche: 'AI f\u00fcr Versicherungen / Pricing',
+    stadt: 'M\u00fcnchen',
+    koordinaten: [48.148, 11.582],
+    gegründet: 2018,
+    mitarbeiter: '200+',
+    finanzierung: 'Nicht \u00f6ffentlich',
+    ceo: 'Carl Leibrock',
+    website: 'https://quantco.com',
+    linkedin: 'https://linkedin.com/company/quantco',
+    beschreibung: 'Spezialist f\u00fcr Predictive Analytics und KI in der Versicherungsbranche (Pricing, Underwriting, Schadensmanagement). Kunden sind f\u00fchrende europ\u00e4ische Erst- und R\u00fcckversicherer.',
+    tags: ['InsurTech', 'Pricing AI', 'Underwriting', 'Actuarial', 'Data Science'],
+    vernetzung: 'Versicherungen, R\u00fcckversicherer, Finanzdienstleister'
+  },
+  {
+    id: 14, type: 'startup',
+    name: 'Levity',
+    branche: 'AI Workflow Automation',
+    stadt: 'K\u00f6ln',
+    koordinaten: [50.933, 6.951],
+    gegründet: 2019,
+    mitarbeiter: '30–60',
+    finanzierung: '~ 5,5 Mio. $',
+    ceo: 'Thilo Huellmann',
+    website: 'https://levity.ai',
+    linkedin: 'https://linkedin.com/company/levity-ai',
+    beschreibung: 'No-Code-KI-Plattform zur Automatisierung von Dokumentenverarbeitung, E-Mail-Klassifizierung und Bildanalyse. Integriert \u00fcber Zapier/Make in bestehende Gesch\u00e4ftsprozesse.',
+    tags: ['No-Code', 'Document AI', 'Automation', 'SME', 'Integration'],
+    vernetzung: 'KMU, Agenturen, HR-Abteilungen, Logistik, Verwaltung'
+  },
+  {
+    id: 15, type: 'startup',
+    name: 'Nyris',
+    branche: 'Visual AI / Bildsuche',
+    stadt: 'Berlin',
+    koordinaten: [52.517, 13.401],
+    gegründet: 2015,
+    mitarbeiter: '30–60',
+    finanzierung: 'Nicht \u00f6ffentlich',
+    ceo: 'Felix von Schoenebeck',
+    website: 'https://nyris.io',
+    linkedin: 'https://linkedin.com/company/nyris',
+    beschreibung: 'Visuelle KI-Suchmaschine f\u00fcr industrielle Teileidentifikation und E-Commerce-Produktsuche. Echtzeit-Bild\u00e4hnlichkeitssuche in Katalogen mit Millionen Teilen. Kunden: Siemens, W\u00fcrth.',
+    tags: ['Computer Vision', 'Image Search', 'Industry 4.0', 'Spare Parts', 'E-Commerce'],
+    vernetzung: 'Industrie, Gro\u00dfhandel, E-Commerce-Plattformen, After-Sales-Service'
+  },
+  {
+    id: 16, type: 'startup',
+    name: 'FORTO (ehem. FreightHub)',
+    branche: 'Logistics AI',
+    stadt: 'Berlin',
+    koordinaten: [52.526, 13.405],
+    gegründet: 2016,
+    mitarbeiter: '500–800',
+    finanzierung: '~ 240 Mio. $',
+    ceo: 'Michael Wax',
+    website: 'https://forto.com',
+    linkedin: 'https://linkedin.com/company/forto',
+    beschreibung: 'Digitale Logistikplattform mit KI-gesteuerter Routenoptimierung, automatisierter Zollabwicklung und Echtzeit-Tracking f\u00fcr Seefracht und Luftfracht weltweit.',
+    tags: ['Supply Chain', 'Freight', 'Zollabwicklung', 'Tracking', 'E-Commerce Logistics'],
+    vernetzung: 'Exporteure, Importeure, Speditionen, Handel, Automobil'
+  },
+  {
+    id: 17, type: 'startup',
+    name: 'Personio',
+    branche: 'HR-Software / AI',
+    stadt: 'M\u00fcnchen',
+    koordinaten: [48.143, 11.555],
+    gegründet: 2015,
+    mitarbeiter: '1 800+',
+    finanzierung: '~ 700 Mio. $ (Unicorn, ~8,5 Mrd. $ Bewertung)',
+    ceo: 'Hanno Renner',
+    website: 'https://personio.de',
+    linkedin: 'https://linkedin.com/company/personio',
+    beschreibung: 'All-in-One HR-Plattform f\u00fcr KMU in Europa. KI-Funktionen f\u00fcr Bewerbermanagement, Onboarding, Gehaltsabrechnung und Mitarbeiterbindung. \u00dcber 14.000 Kunden in 9 L\u00e4ndern.',
+    tags: ['HRTech', 'Payroll', 'Recruiting AI', 'SME', 'SaaS', 'DSGVO'],
+    vernetzung: 'KMU, Personaldienstleister, Steuerberater, Unternehmensberater'
+  },
+  {
+    id: 18, type: 'startup',
+    name: 'Bliq',
+    branche: 'AI Productivity / Enterprise',
+    stadt: 'Berlin',
+    koordinaten: [52.506, 13.390],
+    gegründet: 2022,
+    mitarbeiter: '20–40',
+    finanzierung: '~ 5 Mio. \u20ac',
+    ceo: 'Peter Liechti',
+    website: 'https://bliq.ai',
+    linkedin: 'https://linkedin.com/company/bliq-ai',
+    beschreibung: 'KI-Kopilot f\u00fcr die Automobilindustrie, der Fahrern kontextbezogen assistiert und Flottenmanagern Einblicke liefert. Integration in Fahrzeug-Cockpits per API.',
+    tags: ['Automotive AI', 'In-Car AI', 'Fleet Management', 'Mobility'],
+    vernetzung: 'OEMs, Flottenmanager, Telematikanbieter, Taxi/Ride-Hailing'
+  },
+  {
+    id: 19, type: 'startup',
+    name: 'Enio',
+    branche: 'EV Charging AI',
+    stadt: 'Berlin',
+    koordinaten: [52.512, 13.385],
+    gegründet: 2019,
+    mitarbeiter: '20–50',
+    finanzierung: 'Nicht \u00f6ffentlich',
+    ceo: 'Max Sch\u00f6nberg',
+    website: 'https://enio.eu',
+    linkedin: 'https://linkedin.com/company/enio-charging',
+    beschreibung: 'Smart-Charging-Plattform f\u00fcr Ladenetzbetreiber. KI optimiert Ladezeiten und Energiemanagement, reduziert Netzlastspitzen und integriert erneuerbare Energien.',
+    tags: ['E-Mobility', 'Smart Grid', 'EV Charging', 'Energy Management', 'IoT'],
+    vernetzung: 'Energieversorger, Immobilienunternehmen, Kommunen, Automobilindustrie'
+  },
+  {
+    id: 20, type: 'startup',
+    name: 'Luminance',
+    branche: 'Legal AI',
+    stadt: 'Frankfurt',
+    koordinaten: [50.116, 8.680],
+    gegründet: 2015,
+    mitarbeiter: '200+',
+    finanzierung: '~ 100 Mio. $',
+    ceo: 'Eleanor Lightbody',
+    website: 'https://luminance.com',
+    linkedin: 'https://linkedin.com/company/luminance',
+    beschreibung: 'KI f\u00fcr juristische Dokumentenpr\u00fcfung, Vertragsanalyse und Due Diligence. Deutscher Standort in Frankfurt bedient DAX-Konzerne und Anwaltskanzleien mit DSGVO-konformer Datenverarbeitung.',
+    tags: ['LegalTech', 'Contract Review', 'Due Diligence', 'M&A', 'Compliance'],
+    vernetzung: 'Anwaltskanzleien, Rechtsabteilungen, M&A-Berater, Private Equity, Banken'
+  },
+  // ── ETABLIERTE UNTERNEHMEN ──
+  {
+    id: 21, type: 'company',
+    name: 'SAP SE',
+    branche: 'Business Software / AI',
+    stadt: 'Walldorf',
+    koordinaten: [49.297, 8.650],
+    gegründet: 1972,
+    mitarbeiter: '~ 105 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: SAP)',
+    ceo: 'Christian Klein',
+    website: 'https://sap.com',
+    linkedin: 'https://linkedin.com/company/sap',
+    beschreibung: 'Weltgr\u00f6\u00dfter Anbieter von Unternehmenssoftware. SAP Business AI integriert generative KI in alle Kernprozesse (ERP, CRM, HCM). SAP BTP ist die zentrale Cloud-Plattform f\u00fcr KI-Entwicklung.',
+    tags: ['ERP', 'CRM', 'Generative AI', 'Cloud', 'Enterprise', 'SAP BTP'],
+    vernetzung: 'Alle Branchen, globale Enterprises, SAP-Partner-\u00d6kosystem (> 22 000 Partner)'
+  },
+  {
+    id: 22, type: 'company',
+    name: 'Siemens AG',
+    branche: 'Industrial AI / Digitalisierung',
+    stadt: 'M\u00fcnchen',
+    koordinaten: [48.162, 11.601],
+    gegründet: 1847,
+    mitarbeiter: '~ 320 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: SIE)',
+    ceo: 'Roland Busch',
+    website: 'https://siemens.com',
+    linkedin: 'https://linkedin.com/company/siemens',
+    beschreibung: 'Technologiekonzern mit starkem KI-Fokus in Industrial Automation, Smart Buildings und Energieinfrastruktur. Siemens Industrial Copilot nutzt generative KI f\u00fcr die Fertigung. Xcelerator AI-\u00d6kosystem.',
+    tags: ['Industry 4.0', 'Digital Twin', 'IoT', 'Automation', 'Energy', 'Smart Manufacturing'],
+    vernetzung: 'Maschinenbau, Energie, Bau, Healthcare, Transport, \u00d6ffentliche Hand'
+  },
+  {
+    id: 23, type: 'company',
+    name: 'Bosch Group',
+    branche: 'AI f\u00fcr Automotive & IoT',
+    stadt: 'Stuttgart',
+    koordinaten: [48.770, 9.185],
+    gegründet: 1886,
+    mitarbeiter: '~ 430 000',
+    finanzierung: 'Nicht b\u00f6rsennotiert (Robert Bosch GmbH)',
+    ceo: 'Stefan Hartung',
+    website: 'https://bosch.com',
+    linkedin: 'https://linkedin.com/company/bosch',
+    beschreibung: 'Technologie- und Dienstleistungsunternehmen mit eigenem Bosch Center for Artificial Intelligence (BCAI). KI in Fahrerassistenz, Smart Home, Predictive Maintenance und Halbleitern.',
+    tags: ['Automotive AI', 'Smart Home', 'Semiconductor', 'BCAI', 'Edge AI', 'IoT'],
+    vernetzung: 'OEMs, Tier-1-Zulieferer, Immobilienwirtschaft, Industrie, Medizintechnik'
+  },
+  {
+    id: 24, type: 'company',
+    name: 'Deutsche Telekom AG',
+    branche: 'Telekommunikation / AI',
+    stadt: 'Bonn',
+    koordinaten: [50.733, 7.099],
+    gegründet: 1996,
+    mitarbeiter: '~ 200 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: DTE)',
+    ceo: 'Timotheus H\u00f6ttges',
+    website: 'https://telekom.com',
+    linkedin: 'https://linkedin.com/company/deutsche-telekom',
+    beschreibung: 'Europas gr\u00f6\u00dftes Telekommunikationsunternehmen. T-Systems und Telekom Innovation Laboratories entwickeln KI f\u00fcr Netzwerkoptimierung, Kundendienst und souver\u00e4ne Cloud-L\u00f6sungen (Open Telekom Cloud).',
+    tags: ['5G AI', 'Cloud', 'Network Optimization', 'Customer AI', 'Open Telekom Cloud'],
+    vernetzung: '\u00d6ffentlicher Sektor, Gesundheitswesen, Automobil, Medien, KMU'
+  },
+  {
+    id: 25, type: 'company',
+    name: 'BMW Group',
+    branche: 'KI in der Automobilindustrie',
+    stadt: 'M\u00fcnchen',
+    koordinaten: [48.177, 11.556],
+    gegründet: 1916,
+    mitarbeiter: '~ 155 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: BMW)',
+    ceo: 'Oliver Zipse',
+    website: 'https://bmwgroup.com',
+    linkedin: 'https://linkedin.com/company/bmwgroup',
+    beschreibung: 'BMW nutzt KI f\u00fcr autonomes Fahren (Level 2+), Qualit\u00e4tskontrolle in der Fertigung, personalisierten Kundenservice und Lieferkettenoptimierung. AWS-Partner f\u00fcr KI-Cloud-Services.',
+    tags: ['Autonomous Driving', 'Quality AI', 'Connected Car', 'Supply Chain AI', 'ADAS'],
+    vernetzung: 'Automobilzulieferer, Technologieunternehmen, Versicherungen, Energieversorger'
+  },
+  {
+    id: 26, type: 'company',
+    name: 'Mercedes-Benz Group',
+    branche: 'KI in der Automobilindustrie',
+    stadt: 'Stuttgart',
+    koordinaten: [48.780, 9.175],
+    gegründet: 1926,
+    mitarbeiter: '~ 170 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: MBG)',
+    ceo: 'Ola K\u00e4llenius',
+    website: 'https://mercedes-benz.com',
+    linkedin: 'https://linkedin.com/company/mercedes-benz',
+    beschreibung: 'MBUX KI-Assistent mit ChatGPT-Integration, autonome Fahrfunktionen, KI-gest\u00fctzte Fertigung in der \u201eFactory 56\u201c. Strategische KI-Partnerschaften mit NVIDIA, Microsoft und Google.',
+    tags: ['MBUX', 'Autonomous Driving', 'NVIDIA', 'Generative AI', 'Smart Factory'],
+    vernetzung: 'Halbleiterhersteller, Cloud-Provider, Zulieferer, Mobility-Dienste'
+  },
+  {
+    id: 27, type: 'company',
+    name: 'Volkswagen AG',
+    branche: 'KI in der Automobilindustrie',
+    stadt: 'Wolfsburg',
+    koordinaten: [52.423, 10.787],
+    gegründet: 1937,
+    mitarbeiter: '~ 660 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: VOW3)',
+    ceo: 'Oliver Blume',
+    website: 'https://volkswagen-group.com',
+    linkedin: 'https://linkedin.com/company/volkswagen-group',
+    beschreibung: 'Weltweit gr\u00f6\u00dfter Automobilhersteller mit umfassendem KI-Programm: Produktionsoptimierung, ChatGPT-Integration in Fahrzeuge (IDA), autonome Logistik und KI-gest\u00fctztes Produktdesign.',
+    tags: ['ChatGPT Vehicle', 'Production AI', 'E-Mobility', 'Software-Defined Vehicle', 'CARIAD'],
+    vernetzung: 'Zulieferer, Software-Unternehmen, Charging-Infrastruktur, Flottenbetreiber'
+  },
+  {
+    id: 28, type: 'company',
+    name: 'Deutsche Bank AG',
+    branche: 'KI in der Finanzwirtschaft',
+    stadt: 'Frankfurt',
+    koordinaten: [50.107, 8.665],
+    gegründet: 1870,
+    mitarbeiter: '~ 90 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: DBK)',
+    ceo: 'Christian Sewing',
+    website: 'https://db.com',
+    linkedin: 'https://linkedin.com/company/deutsche-bank',
+    beschreibung: 'Einsatz von KI f\u00fcr Risikobewertung, Betrugserkennung, Kundenservice-Automatisierung und algorithmischen Handel. Partnerschaft mit NVIDIA und Google f\u00fcr generative KI in der Finanzanalyse.',
+    tags: ['Risk AI', 'Fraud Detection', 'Algorithmic Trading', 'RegTech', 'FinTech'],
+    vernetzung: 'FinTech-Startups, Regulierungsbeh\u00f6rden (BaFin), Versicherungen, Unternehmen'
+  },
+  {
+    id: 29, type: 'company',
+    name: 'Allianz SE',
+    branche: 'KI in der Versicherungsbranche',
+    stadt: 'M\u00fcnchen',
+    koordinaten: [48.135, 11.567],
+    gegründet: 1890,
+    mitarbeiter: '~ 160 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: ALV)',
+    ceo: 'Oliver B\u00e4te',
+    website: 'https://allianz.com',
+    linkedin: 'https://linkedin.com/company/allianz',
+    beschreibung: 'KI f\u00fcr automatisierte Schadensregulierung, Predictive Underwriting und personalisierten Kundenservice. Allianz Technology KI-Lab entwickelt konzernweite KI-L\u00f6sungen f\u00fcr 70+ Landesgesellschaften.',
+    tags: ['InsurTech', 'Claims AI', 'Underwriting AI', 'Customer Analytics', 'Global'],
+    vernetzung: 'InsurTech-Startups, Krankenh\u00e4user, Automobilindustrie, Immobilien'
+  },
+  {
+    id: 30, type: 'company',
+    name: 'BASF SE',
+    branche: 'KI in der Chemieindustrie',
+    stadt: 'Ludwigshafen',
+    koordinaten: [49.477, 8.445],
+    gegründet: 1865,
+    mitarbeiter: '~ 112 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: BAS)',
+    ceo: 'Markus Kamieth',
+    website: 'https://basf.com',
+    linkedin: 'https://linkedin.com/company/basf',
+    beschreibung: 'Weltweit f\u00fchrendes Chemieunternehmen. KI-Einsatz f\u00fcr Materialentdeckung, Prozessoptimierung, Lieferkettenmanagement und Laborautomatisierung. Eigene KI-Plattform \u201eChemovator\u201c f\u00fcr Startups.',
+    tags: ['Materials Discovery', 'Process Optimization', 'Laboratory AI', 'Chemistry AI', 'Chemovator'],
+    vernetzung: 'Pharmaunternehmen, Agrarunternehmen, Automobilindustrie, Materialforschung'
+  },
+  {
+    id: 31, type: 'company',
+    name: 'DHL Group / Deutsche Post',
+    branche: 'KI in Logistik & E-Commerce',
+    stadt: 'Bonn',
+    koordinaten: [50.729, 7.091],
+    gegründet: 1969,
+    mitarbeiter: '~ 590 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: DPW)',
+    ceo: 'Tobias Meyer',
+    website: 'https://dhl.com',
+    linkedin: 'https://linkedin.com/company/dhl',
+    beschreibung: 'KI-Einsatz f\u00fcr Routenoptimierung, Sortierrobotik, Nachfrageprognosen und autonome Lieferfahrzeuge. DHL Resilience360 nutzt KI f\u00fcr globales Supply-Chain-Risikomanagement.',
+    tags: ['Route Optimization', 'Supply Chain Risk', 'Warehouse Robotics', 'Last Mile AI', 'Global Logistics'],
+    vernetzung: 'E-Commerce, Pharma, Automobil, Handel, Lebensmittelindustrie'
+  },
+  {
+    id: 32, type: 'company',
+    name: 'Infineon Technologies',
+    branche: 'KI-Chips / Halbleiter',
+    stadt: 'M\u00fcnchen',
+    koordinaten: [48.166, 11.553],
+    gegründet: 1999,
+    mitarbeiter: '~ 58 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: IFX)',
+    ceo: 'Jochen Hanebeck',
+    website: 'https://infineon.com',
+    linkedin: 'https://linkedin.com/company/infineon-technologies',
+    beschreibung: 'F\u00fchrender Halbleiterhersteller f\u00fcr KI-Edge-Computing, Automotive AI (Radar, LiDAR, MCUs) und Security-Chips. AURIX-Mikrocontroller sind Standard in autonomen Fahrzeugen.',
+    tags: ['Edge AI', 'Automotive Chips', 'Security IC', 'Radar', 'AURIX', 'Semiconductor'],
+    vernetzung: 'OEMs, EV-Hersteller, Industrie, IoT-Hersteller, Verteidigung'
+  },
+  {
+    id: 33, type: 'company',
+    name: 'Lufthansa Group',
+    branche: 'KI in der Luftfahrt',
+    stadt: 'Frankfurt',
+    koordinaten: [50.120, 8.690],
+    gegründet: 1953,
+    mitarbeiter: '~ 96 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: LHA)',
+    ceo: 'Carsten Spohr',
+    website: 'https://lufthansagroup.com',
+    linkedin: 'https://linkedin.com/company/lufthansa-group',
+    beschreibung: 'KI f\u00fcr dynamisches Pricing, Flottenoptimierung, Predictive Maintenance und Passagierservice-Chatbots. Lufthansa Industry Solutions entwickelt KI-Produkte f\u00fcr externe Kunden.',
+    tags: ['Pricing AI', 'Predictive Maintenance', 'Chatbot', 'Fleet Optimization', 'Aviation'],
+    vernetzung: 'Flugzeughersteller, Reiseb\u00fcros, Flugh\u00e4fen, Catering, IT-Dienstleister'
+  },
+  {
+    id: 34, type: 'company',
+    name: 'Zalando SE',
+    branche: 'KI im E-Commerce / Fashion',
+    stadt: 'Berlin',
+    koordinaten: [52.498, 13.413],
+    gegründet: 2008,
+    mitarbeiter: '~ 17 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: ZAL)',
+    ceo: 'Robert Gentz',
+    website: 'https://zalando.com',
+    linkedin: 'https://linkedin.com/company/zalando',
+    beschreibung: 'Europas f\u00fchrende Modeplattform nutzt KI f\u00fcr Personalisierung, Gr\u00f6\u00dfenempfehlungen, Trendprognosen, automatisches Styling und Retouren-Optimierung. Eigene KI-Forschungsabteilung.',
+    tags: ['Fashion AI', 'Recommendation Engine', 'Size AI', 'Computer Vision', 'Personalization'],
+    vernetzung: 'Modemarken, Logistikpartner, Technologieanbieter, Kreativagenturen'
+  },
+  {
+    id: 35, type: 'company',
+    name: 'Volkswagen Financial Services / Volkswagen Bank',
+    branche: 'KI in der Automobilfinanzierung',
+    stadt: 'Wolfsburg',
+    koordinaten: [52.420, 10.780],
+    gegründet: 1994,
+    mitarbeiter: '~ 15 000',
+    finanzierung: 'Tochter der Volkswagen AG',
+    ceo: 'Rolf Woller',
+    website: 'https://vwfs.de',
+    linkedin: 'https://linkedin.com/company/volkswagen-financial-services',
+    beschreibung: 'KI-gest\u00fctzte Kreditw\u00fcrdigkeitspr\u00fcfung, personalisierte Finanzierungsangebote und automatisierte Schadensbewertung f\u00fcr Fahrzeugleasingvertr\u00e4ge europaweit.',
+    tags: ['Auto Finance', 'Credit AI', 'Leasing', 'Banking', 'Automotive'],
+    vernetzung: 'Autoh\u00e4ndler, Banken, Versicherungen, OEMs'
+  },
+  // ── RECHENZENTREN ──
+  {
+    id: 36, type: 'datacenter',
+    name: 'Equinix Frankfurt (FR-Cluster)',
+    branche: 'Carrier-neutrales Rechenzentrum',
+    stadt: 'Frankfurt',
+    koordinaten: [50.100, 8.630],
+    gegründet: 2000,
+    mitarbeiter: 'N/A (Equinix: ~13 000)',
+    finanzierung: 'B\u00f6rsennotiert (NASDAQ: EQIX)',
+    ceo: 'Adaire Fox-Martin (EMEA)',
+    website: 'https://equinix.de',
+    linkedin: 'https://linkedin.com/company/equinix',
+    beschreibung: 'Gr\u00f6\u00dfter Colocation-Anbieter in Frankfurt mit 11+ Rechenzentren (FR1\u2013FR11). Herzst\u00fcck des DE-CIX-Internetknotens. Mehr als 1 700 direkte Verbindungen zu Cloud-Anbietern, ISPs und Netzwerken.',
+    tags: ['Colocation', 'Interconnection', 'DE-CIX', 'Cloud On-Ramp', 'Tier IV', 'Multi-Cloud'],
+    vernetzung: 'Cloud-Provider, Banken, Medien, Telekommunikation, Beh\u00f6rden'
+  },
+  {
+    id: 37, type: 'datacenter',
+    name: 'Digital Realty / Interxion',
+    branche: 'Hyperscale Rechenzentrum',
+    stadt: 'Frankfurt',
+    koordinaten: [50.095, 8.620],
+    gegründet: 2000,
+    mitarbeiter: 'N/A (Digital Realty: ~5 500)',
+    finanzierung: 'B\u00f6rsennotiert (NYSE: DLR)',
+    ceo: 'Andy Power',
+    website: 'https://digitalrealty.com',
+    linkedin: 'https://linkedin.com/company/digital-realty',
+    beschreibung: 'Hyperscale-Campus in Frankfurt mit mehreren Hallen und direktem Anschluss an DE-CIX. Weitere Standorte in Hamburg, D\u00fcsseldorf und M\u00fcnchen. Bevorzugter Partner f\u00fcr KI-GPU-Cluster.',
+    tags: ['Hyperscale', 'GPU Cluster', 'Multi-Site', 'Campus', 'AI Workloads'],
+    vernetzung: 'Hyperscaler, KI-Startups, Finanzinstitute, Medienunternehmen'
+  },
+  {
+    id: 38, type: 'datacenter',
+    name: 'AWS Deutschland \u2013 Region eu-central-1',
+    branche: 'Public Cloud / AI-Infrastruktur',
+    stadt: 'Frankfurt',
+    koordinaten: [50.112, 8.670],
+    gegründet: 2014,
+    mitarbeiter: 'N/A (Amazon: ~1,5 Mio.)',
+    finanzierung: 'Tochter von Amazon (NASDAQ: AMZN)',
+    ceo: 'Matt Garman (AWS)',
+    website: 'https://aws.amazon.com/de/local/germany/',
+    linkedin: 'https://linkedin.com/company/amazon-web-services',
+    beschreibung: 'AWS-Region Frankfurt (eu-central-1) mit 3 Availability Zones. KI-Dienste: SageMaker, Bedrock (Claude, Llama), Rekognition, Comprehend. Datenschutzkonform nach deutschem Recht dank AWS GDPR Center.',
+    tags: ['Public Cloud', 'SageMaker', 'Bedrock', 'LLM API', 'DSGVO', 'GPU-as-a-Service'],
+    vernetzung: 'Alle Branchen, Startups (via AWS Activate), Beh\u00f6rden, Forschung'
+  },
+  {
+    id: 39, type: 'datacenter',
+    name: 'Microsoft Azure \u2013 Deutschland Region',
+    branche: 'Public Cloud / AI-Infrastruktur',
+    stadt: 'Frankfurt',
+    koordinaten: [50.108, 8.674],
+    gegründet: 2019,
+    mitarbeiter: 'N/A (Microsoft: ~220 000)',
+    finanzierung: 'B\u00f6rsennotiert (NASDAQ: MSFT)',
+    ceo: 'Satya Nadella',
+    website: 'https://azure.microsoft.com/de-de/global-infrastructure/germany/',
+    linkedin: 'https://linkedin.com/company/microsoft',
+    beschreibung: 'Azure-Regionen in Deutschland West Central (Frankfurt) und North (Berlin). Azure OpenAI Service bietet GPT-4, Copilot und DALL-E mit DSGVO-konformer EU-Datenhaltung.',
+    tags: ['Azure OpenAI', 'GPT-4', 'Copilot', 'DSGVO', 'Hybrid Cloud', 'Microsoft 365 AI'],
+    vernetzung: 'Enterprises, \u00f6ffentliche Verwaltung, Healthcare, Finanzdienstleister'
+  },
+  {
+    id: 40, type: 'datacenter',
+    name: 'Google Cloud \u2013 Region europe-west3',
+    branche: 'Public Cloud / AI-Infrastruktur',
+    stadt: 'Frankfurt',
+    koordinaten: [50.103, 8.660],
+    gegründet: 2017,
+    mitarbeiter: 'N/A (Google/Alphabet: ~180 000)',
+    finanzierung: 'B\u00f6rsennotiert (NASDAQ: GOOGL)',
+    ceo: 'Thomas Kurian (Google Cloud)',
+    website: 'https://cloud.google.com/about/locations/frankfurt',
+    linkedin: 'https://linkedin.com/company/google-cloud',
+    beschreibung: 'Google Cloud Frankfurt mit Vertex AI, Gemini-Modellen und TPU-Zugang. Datentreuh\u00e4nder-Option via T-Systems. Speziell f\u00fcr KRITIS-konforme KI-Workloads im \u00f6ffentlichen Sektor ausgelegt.',
+    tags: ['Vertex AI', 'Gemini', 'TPU', 'KRITIS', 'Datentreuh\u00e4nder', 'T-Systems'],
+    vernetzung: 'Beh\u00f6rden, Medien, Finanzbranche, Forschungseinrichtungen'
+  },
+  {
+    id: 41, type: 'datacenter',
+    name: 'Hetzner Online',
+    branche: 'Managed Hosting / Cloud',
+    stadt: 'N\u00fcrnberg',
+    koordinaten: [49.454, 11.078],
+    gegründet: 1997,
+    mitarbeiter: '~ 500',
+    finanzierung: 'Privatunternehmen',
+    ceo: 'Martin Hetzner',
+    website: 'https://hetzner.com',
+    linkedin: 'https://linkedin.com/company/hetzner-online',
+    beschreibung: 'Deutschlands kosteneffizientester Rechenzentrumsbetreiber. Standorte in N\u00fcrnberg, Falkenstein und Helsinki. GPU-Server f\u00fcr KI-Training (H100, A100, RTX) zu wettbewerbsf\u00e4higen Preisen.',
+    tags: ['Dedicated Server', 'GPU Server', 'Affordable Cloud', 'H100', 'KI-Training', 'CO\u2082-neutral'],
+    vernetzung: 'Startups, Mittelstand, Forschungsinstitute, Webagenturen, Developer'
+  },
+  {
+    id: 42, type: 'datacenter',
+    name: 'IONOS (1&1 Ionos SE)',
+    branche: 'Cloud-Hosting / Managed Services',
+    stadt: 'Karlsruhe',
+    koordinaten: [49.006, 8.403],
+    gegründet: 1988,
+    mitarbeiter: '~ 4 000',
+    finanzierung: 'B\u00f6rsennotiert (XETRA: IOS)',
+    ceo: 'Achim Weiss',
+    website: 'https://ionos.de',
+    linkedin: 'https://linkedin.com/company/ionos',
+    beschreibung: 'Europas gr\u00f6\u00dfter Webhoster mit eigenen Rechenzentren in Karlsruhe und Frankfurt. IONOS AI Model Hub bietet gehostete LLM-APIs (Llama, Mistral) mit europ\u00e4ischer Datenhaltung.',
+    tags: ['KMU-Cloud', 'AI Model Hub', 'DSGVO', 'Shared Hosting', 'VPS', 'Llama API'],
+    vernetzung: 'KMU, E-Commerce, Agenturen, Non-Profits, \u00d6ffentliche Verwaltung'
+  },
+  {
+    id: 43, type: 'datacenter',
+    name: 'T-Systems (Open Telekom Cloud)',
+    branche: 'Souver\u00e4ne Cloud / Managed IT',
+    stadt: 'Frankfurt',
+    koordinaten: [50.113, 8.695],
+    gegründet: 1995,
+    mitarbeiter: '~ 28 000',
+    finanzierung: 'Tochter der Deutschen Telekom AG',
+    ceo: 'Adel Al-Saleh',
+    website: 'https://t-systems.com',
+    linkedin: 'https://linkedin.com/company/t-systems',
+    beschreibung: 'Betreiber der Open Telekom Cloud \u2013 DSGVO-konforme, souver\u00e4ne Public Cloud f\u00fcr den deutschen Markt. Google-Datentreuh\u00e4nder f\u00fcr das \u00f6ffentliche Gesundheitswesen. Rechenzentren in Biere und Magdeburg.',
+    tags: ['Souver\u00e4ne Cloud', 'DSGVO', 'Datentreuh\u00e4nder', 'BSI C5', 'Healthcare IT', 'Government Cloud'],
+    vernetzung: 'Bundesbeh\u00f6rden, Gesundheitswesen, Banken, Versicherungen, KRITIS-Betreiber'
+  },
+  {
+    id: 44, type: 'datacenter',
+    name: 'DE-CIX Frankfurt',
+    branche: 'Internet Exchange Point (IXP)',
+    stadt: 'Frankfurt',
+    koordinaten: [50.116, 8.685],
+    gegründet: 1995,
+    mitarbeiter: '~ 200',
+    finanzierung: 'Eco e.V. (Non-profit)',
+    ceo: 'Thomas King (CTO) / Markus Sch\u00f6ller',
+    website: 'https://de-cix.net',
+    linkedin: 'https://linkedin.com/company/de-cix',
+    beschreibung: 'Weltgr\u00f6\u00dfter Internetknoten \u2013 14,4 Tbit/s Peakdurchsatz (2024). Verbindet \u00fcber 1 000 Netze. Kritische Infrastruktur f\u00fcr latenzarme KI-Dienste, CDNs und Echtzeit-Daten\u00fcbertragung in Europa.',
+    tags: ['Internet Exchange', 'Peering', 'KRITIS', 'Low Latency', 'CDN', 'DNS'],
+    vernetzung: 'ISPs, CDNs, Cloud-Provider, Content-Plattformen, Telekommunikation'
+  },
+  {
+    id: 45, type: 'datacenter',
+    name: 'NTT Global Data Centers',
+    branche: 'Colocation / AI-ready Rechenzentren',
+    stadt: 'Frankfurt',
+    koordinaten: [50.090, 8.615],
+    gegründet: 1998,
+    mitarbeiter: 'N/A (NTT: ~330 000)',
+    finanzierung: 'Tochter NTT Ltd. (Japan)',
+    ceo: 'Yuji Kohda',
+    website: 'https://hello.global.ntt/de-de',
+    linkedin: 'https://linkedin.com/company/ntt-global-data-centers',
+    beschreibung: 'NTT betreibt in Frankfurt einen der modernsten AI-ready Colocation-Campusse Europas mit hochdichter K\u00fchlung f\u00fcr GPU-/AI-Server bis 40 kW pro Rack. Fiber-Direct-Anschluss an DE-CIX.',
+    tags: ['AI-ready DC', 'High Density', 'GPU Hosting', 'Colocation', 'Carrier Neutral', 'Frankfurt'],
+    vernetzung: 'Enterprise-IT, Cloud-Provider, Finanzinstitute, KI-Infrastruktur-Betreiber'
+  }
+];
+// ══════════════════════════════════════════════════════
+//  M A P
+// ══════════════════════════════════════════════════════
+const map = L.map('map', { preferCanvas: true }).setView([51.2, 10.5], 6);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '\u00a9 <a href="https://carto.com">CARTO</a> \u00a9 <a href="https://openstreetmap.org">OSM</a>',
+  maxZoom: 18
+}).addTo(map);
+// Leaflet ben\u00f6tigt einen expliziten invalidateSize-Aufruf nach dem DOM-Rendering
+setTimeout(() => map.invalidateSize(), 50);
+setTimeout(() => map.invalidateSize(), 300);
+window.addEventListener('resize', () => map.invalidateSize());
+const COLOR = { startup: '#7c3aed', company: '#1d4ed8', datacenter: '#059669' };
+const ICON_LABEL = { startup: '\ud83d\ude80', company: '\ud83c\udfe2', datacenter: '\ud83d\udda5\ufe0f' };
+function makeIcon(type) {
+  const c = COLOR[type];
+  const emoji = ICON_LABEL[type];
+  return L.divIcon({
+    html: '<div style="width:34px;height:34px;border-radius:50%;background:' + c + ';border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:14px;">' + emoji + '</div>',
+    className: '',
+    iconSize: [34, 34],
+    iconAnchor: [17, 17],
+    popupAnchor: [0, -20]
+  });
+}
+const markers = {};
+DATA.forEach(d => {
+  const m = L.marker(d.koordinaten, { icon: makeIcon(d.type) }).addTo(map);
+  m.bindPopup(
+    '<div class="popup-header">' + d.name + '</div>' +
+    '<div class="popup-meta"><b>Typ:</b> ' + (d.type === 'startup' ? '\ud83d\ude80 KI-Startup' : d.type === 'company' ? '\ud83c\udfe2 Unternehmen' : '\ud83d\udda5\ufe0f Rechenzentrum') + '</div>' +
+    '<div class="popup-meta"><b>Branche:</b> ' + d.branche + '</div>' +
+    '<div class="popup-meta"><b>Stadt:</b> ' + d.stadt + '</div>' +
+    '<div class="popup-meta" style="margin-top:4px">' + (d.mitarbeiter !== 'N/A (Equinix: ~13 000)' && d.mitarbeiter !== 'N/A' ? '<b>Mitarbeiter:</b> ' + d.mitarbeiter : '') + '</div>' +
+    '<a class="popup-link" href="' + d.website + '" target="_blank"><i class="fa fa-external-link-alt" style="margin-right:3px"></i>Website \u00f6ffnen</a>'
+  );
+  markers[d.id] = m;
+});
+// ══════════════════════════════════════════════════════
+//  R E N D E R  C A R D S
+// ══════════════════════════════════════════════════════
+function renderCards(items) {
+  const container = document.getElementById('cardsContainer');
+  const noRes = document.getElementById('noResults');
+  document.getElementById('visibleCount').textContent = items.length;
+  if (items.length === 0) { container.innerHTML = ''; noRes.style.display = 'block'; return; }
+  noRes.style.display = 'none';
+  container.innerHTML = items.map(d => {
+    const typLabel = d.type === 'startup' ? 'KI-Startup' : d.type === 'company' ? 'Unternehmen' : 'Rechenzentrum';
+    const typIcon = d.type === 'startup' ? 'fa-rocket' : d.type === 'company' ? 'fa-building' : 'fa-server';
+    const showFin = d.finanzierung && d.finanzierung !== 'Nicht \u00f6ffentlich' && d.finanzierung !== 'N/A';
+    return '<div class="card ' + d.type + '" data-id="' + d.id + '" onclick="focusMarker(' + d.id + ')">' +
+      '<div class="card-accent"></div>' +
+      '<div class="card-header">' +
+        '<div class="card-icon"><i class="fa ' + typIcon + '"></i></div>' +
+        '<div class="card-title-area">' +
+          '<div class="card-name">' + d.name + '</div>' +
+          '<div class="card-meta">' +
+            '<span class="badge badge-' + d.type + '">' + typLabel + '</span>' +
+            '<span class="badge badge-city"><i class="fa fa-map-marker-alt" style="margin-right:3px"></i>' + d.stadt + '</span>' +
+            '<span class="badge badge-industry">' + d.branche + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-desc">' + d.beschreibung + '</div>' +
+      '<div class="card-details">' +
+        '<div class="detail-item"><i class="fa fa-calendar"></i><span>Geg. <strong>' + d.gegründet + '</strong></span></div>' +
+        '<div class="detail-item"><i class="fa fa-users"></i><span>MA: <strong>' + d.mitarbeiter + '</strong></span></div>' +
+        (d.ceo !== 'N/A' ? '<div class="detail-item"><i class="fa fa-user-tie"></i><span>CEO: <strong>' + d.ceo + '</strong></span></div>' : '') +
+        (showFin ? '<div class="detail-item"><i class="fa fa-euro-sign"></i><span>Finanz.: <strong>' + d.finanzierung + '</strong></span></div>' : '') +
+        '<div class="detail-item" style="grid-column:1/-1"><i class="fa fa-handshake"></i><span>Vernetzung: <strong>' + d.vernetzung + '</strong></span></div>' +
+      '</div>' +
+      '<div class="card-tags">' + d.tags.map(t => '<span class="tag' + (activeTag === t ? ' active-tag' : '') + '" onclick="event.stopPropagation();filterByTag(\'' + t.replace(/'/g, "\\'") + '\')">' + t + '</span>').join('') + '</div>' +
+      '<div class="card-links">' +
+        '<a class="card-link" href="' + d.website + '" target="_blank"><i class="fa fa-globe"></i>Website</a>' +
+        '<a class="card-link" href="' + d.linkedin + '" target="_blank"><i class="fab fa-linkedin"></i>LinkedIn</a>' +
+        '<a class="card-link" href="https://maps.google.com/?q=' + encodeURIComponent(d.name + ' ' + d.stadt) + '" target="_blank"><i class="fa fa-map-marker-alt"></i>Karte</a>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+function focusMarker(id) {
+  const d = DATA.find(x => x.id === id);
+  if (!d) return;
+  map.setView(d.koordinaten, 11, { animate: true });
+  markers[id].openPopup();
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('highlighted'));
+  const el = document.querySelector('.card[data-id="' + id + '"]');
+  if (el) el.classList.add('highlighted');
+}
+// ══════════════════════════════════════════════════════
+//  F I L T E R  &  S E A R C H
+// ══════════════════════════════════════════════════════
+let activeFilter = 'all';
+let activeCity = 'all';
+let searchQuery = '';
+let activeTag = '';
+
+function filterByTag(tag) {
+  activeTag = (activeTag === tag) ? '' : tag;
+  var bar = document.getElementById('activeTagBar');
+  var label = document.getElementById('activeTagName');
+  if (activeTag) {
+    label.textContent = activeTag;
+    bar.classList.add('visible');
+  } else {
+    bar.classList.remove('visible');
+  }
+  refresh();
+}
+function clearTagFilter() {
+  activeTag = '';
+  document.getElementById('activeTagBar').classList.remove('visible');
+  refresh();
+}
+
+function applyFilters() {
+  const q = searchQuery.toLowerCase();
+  return DATA.filter(d => {
+    const matchType = activeFilter === 'all' || d.type === activeFilter;
+    const matchCity = activeCity === 'all' || d.stadt === activeCity;
+    const matchSearch = !q || [d.name, d.branche, d.stadt, d.beschreibung].concat(d.tags).join(' ').toLowerCase().includes(q);
+    const matchTag = !activeTag || d.tags.indexOf(activeTag) !== -1;
+    return matchType && matchCity && matchSearch && matchTag;
+  });
+}
+function updateCounts() {
+  const q = searchQuery.toLowerCase();
+  const base = DATA.filter(d => {
+    const mc = activeCity === 'all' || d.stadt === activeCity;
+    const ms = !q || [d.name, d.branche, d.stadt, d.beschreibung].concat(d.tags).join(' ').toLowerCase().includes(q);
+    const mt = !activeTag || d.tags.indexOf(activeTag) !== -1;
+    return mc && ms && mt;
+  });
+  document.getElementById('cnt-all').textContent = base.length;
+  document.getElementById('cnt-startup').textContent = base.filter(d => d.type === 'startup').length;
+  document.getElementById('cnt-company').textContent = base.filter(d => d.type === 'company').length;
+  document.getElementById('cnt-datacenter').textContent = base.filter(d => d.type === 'datacenter').length;
+}
+function updateHeaderStats() {
+  document.getElementById('totalCount').textContent = DATA.length;
+  document.getElementById('hdrStartup').textContent = DATA.filter(d => d.type === 'startup').length;
+  document.getElementById('hdrCompany').textContent = DATA.filter(d => d.type === 'company').length;
+  document.getElementById('hdrDC').textContent = DATA.filter(d => d.type === 'datacenter').length;
+}
+function rebuildCityDropdown() {
+  var cities = [];
+  DATA.forEach(function(d) { if (cities.indexOf(d.stadt) === -1) cities.push(d.stadt); });
+  cities.sort();
+  var sel = document.getElementById('cityFilter');
+  var cur = sel.value;
+  sel.innerHTML = '<option value="all">Alle St\u00e4dte</option>';
+  cities.forEach(function(c) {
+    var opt = document.createElement('option');
+    opt.textContent = c;
+    opt.value = c;
+    sel.appendChild(opt);
+  });
+  sel.value = cur;
+}
+function refresh() {
+  const visible = applyFilters();
+  renderCards(visible);
+  updateCounts();
+  DATA.forEach(d => {
+    const isVis = visible.find(x => x.id === d.id);
+    if (isVis) {
+      if (!map.hasLayer(markers[d.id])) map.addLayer(markers[d.id]);
+    } else {
+      if (map.hasLayer(markers[d.id])) map.removeLayer(markers[d.id]);
+    }
+  });
+}
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    refresh();
+  });
+});
+// City select
+document.getElementById('cityFilter').addEventListener('change', e => {
+  activeCity = e.target.value;
+  refresh();
+});
+// Search
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  refresh();
+});
+
+// ══════════════════════════════════════════════════════
+//  G E O C O D I N G  (Nominatim / OpenStreetMap)
+// ══════════════════════════════════════════════════════
+var geocodedLat = null;
+var geocodedLng = null;
+var geocodedCity = '';
+
+function geocodeCity() {
+  var input = document.getElementById('f-stadt').value.trim();
+  var status = document.getElementById('geoStatus');
+  var btn = document.getElementById('btnGeo');
+  if (!input) {
+    status.className = 'geo-status error';
+    status.innerHTML = '<i class="fa fa-exclamation-circle"></i> Bitte Stadt oder PLZ eingeben.';
+    return;
+  }
+  btn.classList.add('loading');
+  btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Suche\u2026';
+  status.className = 'geo-status';
+  status.innerHTML = '';
+  geocodedLat = null;
+  geocodedLng = null;
+  geocodedCity = '';
+
+  var query = input + ', Deutschland';
+  var url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=de&q=' + encodeURIComponent(query);
+
+  fetch(url, { headers: { 'Accept-Language': 'de' } })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      btn.classList.remove('loading');
+      btn.innerHTML = '<i class="fa fa-map-marker-alt"></i> Orten';
+      if (data && data.length > 0) {
+        geocodedLat = parseFloat(data[0].lat);
+        geocodedLng = parseFloat(data[0].lon);
+        // Extract city name from display_name
+        var parts = data[0].display_name.split(',');
+        geocodedCity = parts[0].trim();
+        // If input was a PLZ, use the resolved city name for the stadt field
+        if (/^\d{4,5}$/.test(input)) {
+          document.getElementById('f-stadt').value = geocodedCity;
+        } else {
+          geocodedCity = input;
+        }
+        status.className = 'geo-status success';
+        status.innerHTML = '<i class="fa fa-check-circle"></i> Gefunden: <strong>' + data[0].display_name.substring(0, 80) + '</strong> <span class="geo-coords">(' + geocodedLat.toFixed(4) + ', ' + geocodedLng.toFixed(4) + ')</span>';
+      } else {
+        status.className = 'geo-status error';
+        status.innerHTML = '<i class="fa fa-exclamation-triangle"></i> Ort nicht gefunden. Bitte pr\u00fcfen Sie die Eingabe.';
+      }
+    })
+    .catch(function() {
+      btn.classList.remove('loading');
+      btn.innerHTML = '<i class="fa fa-map-marker-alt"></i> Orten';
+      status.className = 'geo-status error';
+      status.innerHTML = '<i class="fa fa-exclamation-triangle"></i> Geocoding-Fehler. Bitte erneut versuchen.';
+    });
+}
+
+// Auto-geocode when user leaves the stadt field
+document.getElementById('f-stadt').addEventListener('blur', function() {
+  if (this.value.trim() && geocodedLat === null) {
+    geocodeCity();
+  }
+});
+// Also trigger geocoding on Enter in the stadt field
+document.getElementById('f-stadt').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { e.preventDefault(); geocodeCity(); }
+});
+// Reset geocoding when user edits the stadt field
+document.getElementById('f-stadt').addEventListener('input', function() {
+  geocodedLat = null;
+  geocodedLng = null;
+  geocodedCity = '';
+  var status = document.getElementById('geoStatus');
+  status.className = 'geo-status';
+  status.innerHTML = '';
+});
+
+// ══════════════════════════════════════════════════════
+//  M O D A L  /  A D D  E N T R Y
+// ══════════════════════════════════════════════════════
+function openModal() {
+  geocodedLat = null;
+  geocodedLng = null;
+  geocodedCity = '';
+  document.getElementById('geoStatus').className = 'geo-status';
+  document.getElementById('geoStatus').innerHTML = '';
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('f-name').focus();
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('addForm').reset();
+  document.getElementById('geoStatus').className = 'geo-status';
+  document.getElementById('geoStatus').innerHTML = '';
+  geocodedLat = null;
+  geocodedLng = null;
+  geocodedCity = '';
+  document.querySelectorAll('.form-group.invalid').forEach(g => g.classList.remove('invalid'));
+}
+function showToast() {
+  var t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
+function handleSubmit(e) {
+  e.preventDefault();
+  var valid = true;
+  var fields = ['f-name','f-type','f-branche','f-stadt','f-desc'];
+  fields.forEach(function(id) {
+    var el = document.getElementById(id);
+    var grp = el.closest('.form-group');
+    if (!el.value.trim()) { grp.classList.add('invalid'); valid = false; }
+    else { grp.classList.remove('invalid'); }
+  });
+
+  // Check geocoding
+  var stadtGrp = document.getElementById('f-stadt').closest('.form-group');
+  var stadtErr = document.getElementById('f-stadt-error');
+  if (geocodedLat === null || geocodedLng === null) {
+    stadtGrp.classList.add('invalid');
+    stadtErr.textContent = 'Bitte zuerst den Standort orten lassen (Button "Orten" klicken)';
+    stadtErr.style.display = 'block';
+    valid = false;
+  } else {
+    stadtErr.style.display = '';
+  }
+
+  if (!valid) return false;
+
+  var newId = DATA.length > 0 ? Math.max.apply(null, DATA.map(function(d){return d.id;})) + 1 : 1;
+  var tagStr = document.getElementById('f-tags').value;
+  var tags = tagStr ? tagStr.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+
+  var entry = {
+    id: newId,
+    type: document.getElementById('f-type').value,
+    name: document.getElementById('f-name').value.trim(),
+    branche: document.getElementById('f-branche').value.trim(),
+    stadt: document.getElementById('f-stadt').value.trim(),
+    koordinaten: [geocodedLat, geocodedLng],
+    gegründet: parseInt(document.getElementById('f-year').value) || new Date().getFullYear(),
+    mitarbeiter: document.getElementById('f-employees').value.trim() || 'k.A.',
+    finanzierung: document.getElementById('f-funding').value.trim() || 'Nicht \u00f6ffentlich',
+    ceo: document.getElementById('f-ceo').value.trim() || 'k.A.',
+    website: document.getElementById('f-website').value.trim() || '#',
+    linkedin: document.getElementById('f-linkedin').value.trim() || '#',
+    beschreibung: document.getElementById('f-desc').value.trim(),
+    tags: tags,
+    vernetzung: document.getElementById('f-network').value.trim() || ''
+  };
+
+  DATA.push(entry);
+
+  // Add marker
+  var m = L.marker(entry.koordinaten, { icon: makeIcon(entry.type) }).addTo(map);
+  m.bindPopup(
+    '<div class="popup-header">' + entry.name + '</div>' +
+    '<div class="popup-meta"><b>Typ:</b> ' + (entry.type === 'startup' ? '\ud83d\ude80 KI-Startup' : entry.type === 'company' ? '\ud83c\udfe2 Unternehmen' : '\ud83d\udda5\ufe0f Rechenzentrum') + '</div>' +
+    '<div class="popup-meta"><b>Branche:</b> ' + entry.branche + '</div>' +
+    '<div class="popup-meta"><b>Stadt:</b> ' + entry.stadt + '</div>' +
+    '<a class="popup-link" href="' + entry.website + '" target="_blank"><i class="fa fa-external-link-alt" style="margin-right:3px"></i>Website \u00f6ffnen</a>'
+  );
+  markers[entry.id] = m;
+
+  rebuildCityDropdown();
+  updateHeaderStats();
+  refresh();
+  closeModal();
+  showToast();
+
+  // Focus the new entry on the map
+  setTimeout(function() { focusMarker(entry.id); }, 300);
+
+  return false;
+}
+
+// ══════════════════════════════════════════════════════
+//  H E L P  M O D A L
+// ══════════════════════════════════════════════════════
+function openHelp() {
+  document.getElementById('helpOverlay').classList.add('open');
+}
+function closeHelp() {
+  document.getElementById('helpOverlay').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════════════
+//  D Y N A M I C  D A T E
+// ══════════════════════════════════════════════════════
+(function setHeaderDate() {
+  var now = new Date();
+  var mm = String(now.getMonth() + 1).padStart(2, '0');
+  var yyyy = now.getFullYear();
+  document.getElementById('headerDate').textContent = mm + '/' + yyyy;
+})();
+
+// ══════════════════════════════════════════════════════
+//  C O O K I E  B A N N E R
+// ══════════════════════════════════════════════════════
+function acceptCookies() {
+  try { localStorage.setItem('cookie_consent', 'accepted'); } catch(e) {}
+  document.getElementById('cookieBanner').classList.remove('visible');
+}
+function declineCookies() {
+  try { localStorage.setItem('cookie_consent', 'declined'); } catch(e) {}
+  document.getElementById('cookieBanner').classList.remove('visible');
+}
+function reopenCookieBanner() {
+  try { localStorage.removeItem('cookie_consent'); } catch(e) {}
+  document.getElementById('cookieBanner').classList.add('visible');
+}
+(function initCookieBanner() {
+  var consent = null;
+  try { consent = localStorage.getItem('cookie_consent'); } catch(e) {}
+  if (!consent) {
+    setTimeout(function() {
+      document.getElementById('cookieBanner').classList.add('visible');
+    }, 600);
+  }
+})();
+
+// Initial render
+updateHeaderStats();
+refresh();
+</script>
+</body>
+</html>
