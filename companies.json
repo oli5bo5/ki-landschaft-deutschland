@@ -1,0 +1,19 @@
+[
+  {
+    \"id\": 1,
+    \"type\": \"startup\",
+    \"name\": \"Aleph Alpha\",
+    \"branche\": \"Foundation Models / LLM\",
+    \"stadt\": \"Heidelberg\",
+    \"koordinaten\": [49.399, 8.673],
+    \"gegründet\": 2019,
+    \"mitarbeiter\": \"200-350\",
+    \"finanzierung\": \"500 Mio. €\",
+    \"ceo\": \"Jonas Andrulis\",
+    \"website\": \"https://aleph-alpha.com\",
+    \"linkedin\": \"https://linkedin.com/company/aleph-alpha\",
+    \"beschreibung\": \"Europäischer Anbieter von souveränen Large Language Models (LLMs). Entwickelt Luminous-Modelle und bietet eine EU-konforme AI-Cloud für Unternehmen und Behörden.\",
+    \"tags\": [\"LLM\", \"Souveräne KI\", \"Enterprise AI\"],
+    \"vernetzung\": \"Öffentlicher Sektor, Enterprise Software\"
+  }
+]
