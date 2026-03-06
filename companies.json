@@ -1,19 +1,1189 @@
 [
   {
-    \"id\": 1,
-    \"type\": \"startup\",
-    \"name\": \"Aleph Alpha\",
-    \"branche\": \"Foundation Models / LLM\",
-    \"stadt\": \"Heidelberg\",
-    \"koordinaten\": [49.399, 8.673],
-    \"gegründet\": 2019,
-    \"mitarbeiter\": \"200-350\",
-    \"finanzierung\": \"500 Mio. €\",
-    \"ceo\": \"Jonas Andrulis\",
-    \"website\": \"https://aleph-alpha.com\",
-    \"linkedin\": \"https://linkedin.com/company/aleph-alpha\",
-    \"beschreibung\": \"Europäischer Anbieter von souveränen Large Language Models (LLMs). Entwickelt Luminous-Modelle und bietet eine EU-konforme AI-Cloud für Unternehmen und Behörden.\",
-    \"tags\": [\"LLM\", \"Souveräne KI\", \"Enterprise AI\"],
-    \"vernetzung\": \"Öffentlicher Sektor, Enterprise Software\"
+    "id": 1,
+    "type": "startup",
+    "name": "Aleph Alpha",
+    "branche": "Foundation Models / LLM",
+    "stadt": "Heidelberg",
+    "koordinaten": [
+      49.399,
+      8.673
+    ],
+    "gegründet": 2019,
+    "mitarbeiter": "200–350",
+    "finanzierung": "~ 500 Mio. \\u20ac",
+    "ceo": "Jonas Andrulis",
+    "website": "https://aleph-alpha.com",
+    "linkedin": "https://linkedin.com/company/aleph-alpha",
+    "beschreibung": "Europ\\u00e4ischer Anbieter von souver\\u00e4nen Large Language Models (LLMs). Entwickelt Luminous-Modelle und bietet eine EU-konforme AI-Cloud f\\u00fcr Unternehmen und Beh\\u00f6rden. Strategischer Partner der Bundesregierung.",
+    "tags": [
+      "LLM",
+      "Souver\\u00e4ne KI",
+      "Enterprise AI",
+      "Government",
+      "Forschung",
+      "EU AI Act"
+    ],
+    "vernetzung": "\\u00d6ffentlicher Sektor, Enterprise Software, R\\u00fcstung/Sicherheit, Wissenschaft"
+  },
+  {
+    "id": 2,
+    "type": "startup",
+    "name": "DeepL",
+    "branche": "KI-\\u00dcbersetzung / NLP",
+    "stadt": "K\\u00f6ln",
+    "koordinaten": [
+      50.943,
+      6.96
+    ],
+    "gegründet": 2017,
+    "mitarbeiter": "700–900",
+    "finanzierung": "~ 100 Mio. $ (Unicorn)",
+    "ceo": "Jaroslaw Kutylowski",
+    "website": "https://deepl.com",
+    "linkedin": "https://linkedin.com/company/deepl-se",
+    "beschreibung": "Weltmarktf\\u00fchrer f\\u00fcr neuronale maschinelle \\u00dcbersetzung. DeepL Translator und DeepL Write werden von \\u00fcber 100.000 Unternehmen in 28 Sprachen genutzt. API-Zugang f\\u00fcr Gesch\\u00e4ftskunden.",
+    "tags": [
+      "NLP",
+      "\\u00dcbersetzung",
+      "B2B API",
+      "SaaS",
+      "Mehrsprachigkeit"
+    ],
+    "vernetzung": "Verlage, Rechtsabteilungen, E-Commerce, Finanzdienstleistungen, Beh\\u00f6rden"
+  },
+  {
+    "id": 3,
+    "type": "startup",
+    "name": "Celonis",
+    "branche": "Process Mining / AI",
+    "stadt": "M\\u00fcnchen",
+    "koordinaten": [
+      48.14,
+      11.56
+    ],
+    "gegründet": 2011,
+    "mitarbeiter": "3 000+",
+    "finanzierung": "~ 2,4 Mrd. $ (Unicorn, ~13 Mrd. $ Bewertung)",
+    "ceo": "Alexander Rinke",
+    "website": "https://celonis.com",
+    "linkedin": "https://linkedin.com/company/celonis",
+    "beschreibung": "Weltmarktf\\u00fchrer f\\u00fcr Process Mining und Execution Management. KI analysiert Gesch\\u00e4ftsprozesse aus ERP-, CRM- und weiteren Systemen und deckt Ineffizienzen auf. SAP-Partner.",
+    "tags": [
+      "Process Mining",
+      "ERP",
+      "SAP",
+      "Operational Excellence",
+      "Supply Chain"
+    ],
+    "vernetzung": "Produktion, Logistik, Finanzdienstleistungen, Pharma, Gro\\u00dfunternehmen"
+  },
+  {
+    "id": 4,
+    "type": "startup",
+    "name": "Cognigy",
+    "branche": "Conversational AI / Voicebot",
+    "stadt": "D\\u00fcsseldorf",
+    "koordinaten": [
+      51.228,
+      6.782
+    ],
+    "gegründet": 2016,
+    "mitarbeiter": "300–400",
+    "finanzierung": "~ 169 Mio. $",
+    "ceo": "Philipp Heltewig",
+    "website": "https://cognigy.com",
+    "linkedin": "https://linkedin.com/company/cognigy",
+    "beschreibung": "Enterprise-Plattform f\\u00fcr KI-gest\\u00fctzte Customer-Service-Automatisierung via Chat und Telefon. Integriert mit Salesforce, SAP, Genesys und anderen CRM-Systemen.",
+    "tags": [
+      "Chatbot",
+      "Voicebot",
+      "Customer Service",
+      "CRM-Integration",
+      "Omnichannel"
+    ],
+    "vernetzung": "Telekommunikation, Banking, Versicherungen, Retail, Healthcare"
+  },
+  {
+    "id": 5,
+    "type": "startup",
+    "name": "Parloa",
+    "branche": "AI Phone Agents",
+    "stadt": "Berlin",
+    "koordinaten": [
+      52.53,
+      13.41
+    ],
+    "gegründet": 2017,
+    "mitarbeiter": "150–250",
+    "finanzierung": "~ 66 Mio. \\u20ac",
+    "ceo": "Malte Kosub",
+    "website": "https://parloa.com",
+    "linkedin": "https://linkedin.com/company/parloa",
+    "beschreibung": "KI-Plattform f\\u00fcr automatisierte Telefongespr\\u00e4che im Kundenservice. Nat\\u00fcrliche Sprachverarbeitung in Echtzeit erm\\u00f6glicht menschen\\u00e4hnliche Dialoge. Fokus auf DSGVO-Konformit\\u00e4t.",
+    "tags": [
+      "Voice AI",
+      "Call Center",
+      "Customer Experience",
+      "DSGVO",
+      "Telephony"
+    ],
+    "vernetzung": "Contact Center, Versicherungen, Handel, Utilities, Gesundheitswesen"
+  },
+  {
+    "id": 6,
+    "type": "startup",
+    "name": "Merantix",
+    "branche": "KI Venture Builder",
+    "stadt": "Berlin",
+    "koordinaten": [
+      52.52,
+      13.39
+    ],
+    "gegründet": 2016,
+    "mitarbeiter": "200+",
+    "finanzierung": "Nicht \\u00f6ffentlich",
+    "ceo": "Adrian Locher",
+    "website": "https://merantix.com",
+    "linkedin": "https://linkedin.com/company/merantix",
+    "beschreibung": "Europas f\\u00fchrender KI-Venture-Builder mit eigenem KI-Campus in Berlin. Baut und investiert in B2B-KI-Unternehmen in den Bereichen Healthcare, Industrie und Unternehmensanwendungen.",
+    "tags": [
+      "Venture Builder",
+      "B2B AI",
+      "Healthcare AI",
+      "Industrial AI",
+      "VC"
+    ],
+    "vernetzung": "Startups, Investoren, Industrieunternehmen, Krankenh\\u00e4user, Forschungsinstitute"
+  },
+  {
+    "id": 7,
+    "type": "startup",
+    "name": "Konux",
+    "branche": "Industrial AI / Railway",
+    "stadt": "M\\u00fcnchen",
+    "koordinaten": [
+      48.155,
+      11.59
+    ],
+    "gegründet": 2014,
+    "mitarbeiter": "150+",
+    "finanzierung": "~ 100 Mio. $",
+    "ceo": "Andreas N\\u00fc\\u00dfller",
+    "website": "https://konux.com",
+    "linkedin": "https://linkedin.com/company/konux",
+    "beschreibung": "Predictive-Maintenance-Plattform f\\u00fcr Eisenbahninfrastruktur. IoT-Sensoren und KI prognostizieren Ausf\\u00e4lle von Weichen bis zu 4 Monate im Voraus. Kunden: DB Netz, Network Rail.",
+    "tags": [
+      "Predictive Maintenance",
+      "IoT",
+      "Railway",
+      "Infrastructure",
+      "Sensor Data"
+    ],
+    "vernetzung": "Bahnbetreiber, Infrastrukturgesellschaften, Bau, Versicherungen"
+  },
+  {
+    "id": 8,
+    "type": "startup",
+    "name": "Hawk AI",
+    "branche": "Anti-Financial-Crime AI",
+    "stadt": "Hamburg",
+    "koordinaten": [
+      53.553,
+      9.992
+    ],
+    "gegründet": 2018,
+    "mitarbeiter": "100–150",
+    "finanzierung": "~ 30 Mio. $",
+    "ceo": "Wolfgang Berner",
+    "website": "https://hawk.ai",
+    "linkedin": "https://linkedin.com/company/hawk-ai",
+    "beschreibung": "KI-Plattform zur Bek\\u00e4mpfung von Geldw\\u00e4sche (AML) und Finanzbetrug. Reduziert False-Positives bei der Transaktions\\u00fcberwachung um bis zu 70 %. Lizenziert in EU und USA.",
+    "tags": [
+      "AML",
+      "Fraud Detection",
+      "RegTech",
+      "FinTech",
+      "Compliance",
+      "Banking"
+    ],
+    "vernetzung": "Banken, Zahlungsdienstleister, Compliance-Abteilungen, BaFin-regulierte Institute"
+  },
+  {
+    "id": 9,
+    "type": "startup",
+    "name": "Qdrant",
+    "branche": "Vector Database / AI Infrastructure",
+    "stadt": "Berlin",
+    "koordinaten": [
+      52.51,
+      13.42
+    ],
+    "gegründet": 2021,
+    "mitarbeiter": "60–100",
+    "finanzierung": "~ 28 Mio. $",
+    "ceo": "Andrei Vasnetsov",
+    "website": "https://qdrant.tech",
+    "linkedin": "https://linkedin.com/company/qdrant",
+    "beschreibung": "Open-Source-Vektordatenbank f\\u00fcr KI-Anwendungen mit semantischer Suche, Empfehlungssystemen und RAG-Architekturen. Cloud-native, in Rust geschrieben \\u2013 hohe Leistung bei gro\\u00dfen Datenmengen.",
+    "tags": [
+      "Vector DB",
+      "Open Source",
+      "RAG",
+      "Semantic Search",
+      "AI Infrastructure",
+      "Rust"
+    ],
+    "vernetzung": "KI-Entwickler, MLOps, E-Commerce, Medien, Research"
+  },
+  {
+    "id": 10,
+    "type": "startup",
+    "name": "Helsing",
+    "branche": "Defense AI",
+    "stadt": "M\\u00fcnchen",
+    "koordinaten": [
+      48.13,
+      11.57
+    ],
+    "gegründet": 2021,
+    "mitarbeiter": "300+",
+    "finanzierung": "~ 209 Mio. \\u20ac",
+    "ceo": "Gundbert Scherf",
+    "website": "https://helsing.ai",
+    "linkedin": "https://linkedin.com/company/helsing",
+    "beschreibung": "Europ\\u00e4isches R\\u00fcstungs-KI-Unternehmen. Entwickelt Software zur Erkennung, Klassifikation und Lagebewertung f\\u00fcr Milit\\u00e4r und Sicherheitsbeh\\u00f6rden. Partner des Bundesverteidigungsministeriums.",
+    "tags": [
+      "Defense",
+      "Computer Vision",
+      "Surveillance",
+      "NATO",
+      "Government",
+      "Dual Use"
+    ],
+    "vernetzung": "Bundeswehr, NATO, R\\u00fcstungsindustrie, Sicherheitsbeh\\u00f6rden"
+  },
+  {
+    "id": 11,
+    "type": "startup",
+    "name": "Micropsi Industries",
+    "branche": "Robot AI / Maschinenlernen",
+    "stadt": "Berlin",
+    "koordinaten": [
+      52.535,
+      13.43
+    ],
+    "gegründet": 2014,
+    "mitarbeiter": "80–120",
+    "finanzierung": "~ 30 Mio. $",
+    "ceo": "Ronnie Vuine",
+    "website": "https://micropsi-industries.com",
+    "linkedin": "https://linkedin.com/company/micropsi-industries",
+    "beschreibung": "MIRAI ist eine KI-Software, die Industrierobotern Hand-Auge-Koordination beibringt \\u2013 durch menschliches Vorzeigen, ohne Programmierung. Einsatz in Automobil, Elektronik, Medizintechnik.",
+    "tags": [
+      "Robotik",
+      "Computer Vision",
+      "Imitation Learning",
+      "Fertigung",
+      "Automotive"
+    ],
+    "vernetzung": "Automobilindustrie, Elektronikfertigung, Systemintegratoren, Maschinenbau"
+  },
+  {
+    "id": 12,
+    "type": "startup",
+    "name": "Fraugster",
+    "branche": "Fraud Prevention AI",
+    "stadt": "Berlin",
+    "koordinaten": [
+      52.524,
+      13.415
+    ],
+    "gegründet": 2014,
+    "mitarbeiter": "100–150",
+    "finanzierung": "~ 27 Mio. \\u20ac",
+    "ceo": "Max Laemmle",
+    "website": "https://fraugster.com",
+    "linkedin": "https://linkedin.com/company/fraugster",
+    "beschreibung": "Echtzeit-Betrugserkennung f\\u00fcr Online-Zahlungen mittels KI. Analyse von \\u00fcber 2.000 Datenpunkten pro Transaktion in unter 15 ms. Partner von PayPal, Mastercard und f\\u00fchrenden Acquiring-Banken.",
+    "tags": [
+      "Fraud Prevention",
+      "Payments",
+      "FinTech",
+      "Real-time AI",
+      "E-Commerce"
+    ],
+    "vernetzung": "Zahlungsabwickler, Online-H\\u00e4ndler, Banken, Acquirer"
+  },
+  {
+    "id": 13,
+    "type": "startup",
+    "name": "Quantco",
+    "branche": "AI f\\u00fcr Versicherungen / Pricing",
+    "stadt": "M\\u00fcnchen",
+    "koordinaten": [
+      48.148,
+      11.582
+    ],
+    "gegründet": 2018,
+    "mitarbeiter": "200+",
+    "finanzierung": "Nicht \\u00f6ffentlich",
+    "ceo": "Carl Leibrock",
+    "website": "https://quantco.com",
+    "linkedin": "https://linkedin.com/company/quantco",
+    "beschreibung": "Spezialist f\\u00fcr Predictive Analytics und KI in der Versicherungsbranche (Pricing, Underwriting, Schadensmanagement). Kunden sind f\\u00fchrende europ\\u00e4ische Erst- und R\\u00fcckversicherer.",
+    "tags": [
+      "InsurTech",
+      "Pricing AI",
+      "Underwriting",
+      "Actuarial",
+      "Data Science"
+    ],
+    "vernetzung": "Versicherungen, R\\u00fcckversicherer, Finanzdienstleister"
+  },
+  {
+    "id": 14,
+    "type": "startup",
+    "name": "Levity",
+    "branche": "AI Workflow Automation",
+    "stadt": "K\\u00f6ln",
+    "koordinaten": [
+      50.933,
+      6.951
+    ],
+    "gegründet": 2019,
+    "mitarbeiter": "30–60",
+    "finanzierung": "~ 5,5 Mio. $",
+    "ceo": "Thilo Huellmann",
+    "website": "https://levity.ai",
+    "linkedin": "https://linkedin.com/company/levity-ai",
+    "beschreibung": "No-Code-KI-Plattform zur Automatisierung von Dokumentenverarbeitung, E-Mail-Klassifizierung und Bildanalyse. Integriert \\u00fcber Zapier/Make in bestehende Gesch\\u00e4ftsprozesse.",
+    "tags": [
+      "No-Code",
+      "Document AI",
+      "Automation",
+      "SME",
+      "Integration"
+    ],
+    "vernetzung": "KMU, Agenturen, HR-Abteilungen, Logistik, Verwaltung"
+  },
+  {
+    "id": 15,
+    "type": "startup",
+    "name": "Nyris",
+    "branche": "Visual AI / Bildsuche",
+    "stadt": "Berlin",
+    "koordinaten": [
+      52.517,
+      13.401
+    ],
+    "gegründet": 2015,
+    "mitarbeiter": "30–60",
+    "finanzierung": "Nicht \\u00f6ffentlich",
+    "ceo": "Felix von Schoenebeck",
+    "website": "https://nyris.io",
+    "linkedin": "https://linkedin.com/company/nyris",
+    "beschreibung": "Visuelle KI-Suchmaschine f\\u00fcr industrielle Teileidentifikation und E-Commerce-Produktsuche. Echtzeit-Bild\\u00e4hnlichkeitssuche in Katalogen mit Millionen Teilen. Kunden: Siemens, W\\u00fcrth.",
+    "tags": [
+      "Computer Vision",
+      "Image Search",
+      "Industry 4.0",
+      "Spare Parts",
+      "E-Commerce"
+    ],
+    "vernetzung": "Industrie, Gro\\u00dfhandel, E-Commerce-Plattformen, After-Sales-Service"
+  },
+  {
+    "id": 16,
+    "type": "startup",
+    "name": "FORTO (ehem. FreightHub)",
+    "branche": "Logistics AI",
+    "stadt": "Berlin",
+    "koordinaten": [
+      52.526,
+      13.405
+    ],
+    "gegründet": 2016,
+    "mitarbeiter": "500–800",
+    "finanzierung": "~ 240 Mio. $",
+    "ceo": "Michael Wax",
+    "website": "https://forto.com",
+    "linkedin": "https://linkedin.com/company/forto",
+    "beschreibung": "Digitale Logistikplattform mit KI-gesteuerter Routenoptimierung, automatisierter Zollabwicklung und Echtzeit-Tracking f\\u00fcr Seefracht und Luftfracht weltweit.",
+    "tags": [
+      "Supply Chain",
+      "Freight",
+      "Zollabwicklung",
+      "Tracking",
+      "E-Commerce Logistics"
+    ],
+    "vernetzung": "Exporteure, Importeure, Speditionen, Handel, Automobil"
+  },
+  {
+    "id": 17,
+    "type": "startup",
+    "name": "Personio",
+    "branche": "HR-Software / AI",
+    "stadt": "M\\u00fcnchen",
+    "koordinaten": [
+      48.143,
+      11.555
+    ],
+    "gegründet": 2015,
+    "mitarbeiter": "1 800+",
+    "finanzierung": "~ 700 Mio. $ (Unicorn, ~8,5 Mrd. $ Bewertung)",
+    "ceo": "Hanno Renner",
+    "website": "https://personio.de",
+    "linkedin": "https://linkedin.com/company/personio",
+    "beschreibung": "All-in-One HR-Plattform f\\u00fcr KMU in Europa. KI-Funktionen f\\u00fcr Bewerbermanagement, Onboarding, Gehaltsabrechnung und Mitarbeiterbindung. \\u00dcber 14.000 Kunden in 9 L\\u00e4ndern.",
+    "tags": [
+      "HRTech",
+      "Payroll",
+      "Recruiting AI",
+      "SME",
+      "SaaS",
+      "DSGVO"
+    ],
+    "vernetzung": "KMU, Personaldienstleister, Steuerberater, Unternehmensberater"
+  },
+  {
+    "id": 18,
+    "type": "startup",
+    "name": "Bliq",
+    "branche": "AI Productivity / Enterprise",
+    "stadt": "Berlin",
+    "koordinaten": [
+      52.506,
+      13.39
+    ],
+    "gegründet": 2022,
+    "mitarbeiter": "20–40",
+    "finanzierung": "~ 5 Mio. \\u20ac",
+    "ceo": "Peter Liechti",
+    "website": "https://bliq.ai",
+    "linkedin": "https://linkedin.com/company/bliq-ai",
+    "beschreibung": "KI-Kopilot f\\u00fcr die Automobilindustrie, der Fahrern kontextbezogen assistiert und Flottenmanagern Einblicke liefert. Integration in Fahrzeug-Cockpits per API.",
+    "tags": [
+      "Automotive AI",
+      "In-Car AI",
+      "Fleet Management",
+      "Mobility"
+    ],
+    "vernetzung": "OEMs, Flottenmanager, Telematikanbieter, Taxi/Ride-Hailing"
+  },
+  {
+    "id": 19,
+    "type": "startup",
+    "name": "Enio",
+    "branche": "EV Charging AI",
+    "stadt": "Berlin",
+    "koordinaten": [
+      52.512,
+      13.385
+    ],
+    "gegründet": 2019,
+    "mitarbeiter": "20–50",
+    "finanzierung": "Nicht \\u00f6ffentlich",
+    "ceo": "Max Sch\\u00f6nberg",
+    "website": "https://enio.eu",
+    "linkedin": "https://linkedin.com/company/enio-charging",
+    "beschreibung": "Smart-Charging-Plattform f\\u00fcr Ladenetzbetreiber. KI optimiert Ladezeiten und Energiemanagement, reduziert Netzlastspitzen und integriert erneuerbare Energien.",
+    "tags": [
+      "E-Mobility",
+      "Smart Grid",
+      "EV Charging",
+      "Energy Management",
+      "IoT"
+    ],
+    "vernetzung": "Energieversorger, Immobilienunternehmen, Kommunen, Automobilindustrie"
+  },
+  {
+    "id": 20,
+    "type": "startup",
+    "name": "Luminance",
+    "branche": "Legal AI",
+    "stadt": "Frankfurt",
+    "koordinaten": [
+      50.116,
+      8.68
+    ],
+    "gegründet": 2015,
+    "mitarbeiter": "200+",
+    "finanzierung": "~ 100 Mio. $",
+    "ceo": "Eleanor Lightbody",
+    "website": "https://luminance.com",
+    "linkedin": "https://linkedin.com/company/luminance",
+    "beschreibung": "KI f\\u00fcr juristische Dokumentenpr\\u00fcfung, Vertragsanalyse und Due Diligence. Deutscher Standort in Frankfurt bedient DAX-Konzerne und Anwaltskanzleien mit DSGVO-konformer Datenverarbeitung.",
+    "tags": [
+      "LegalTech",
+      "Contract Review",
+      "Due Diligence",
+      "M&A",
+      "Compliance"
+    ],
+    "vernetzung": "Anwaltskanzleien, Rechtsabteilungen, M&A-Berater, Private Equity, Banken"
+  },
+  {
+    "id": 21,
+    "type": "company",
+    "name": "SAP SE",
+    "branche": "Business Software / AI",
+    "stadt": "Walldorf",
+    "koordinaten": [
+      49.297,
+      8.65
+    ],
+    "gegründet": 1972,
+    "mitarbeiter": "~ 105 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: SAP)",
+    "ceo": "Christian Klein",
+    "website": "https://sap.com",
+    "linkedin": "https://linkedin.com/company/sap",
+    "beschreibung": "Weltgr\\u00f6\\u00df-ter Anbieter von Unternehmenssoftware. SAP Business AI integriert generative KI in alle Kernprozesse (ERP, CRM, HCM). SAP BTP ist die zentrale Cloud-Plattform f\\u00fcr KI-Entwicklung.",
+    "tags": [
+      "ERP",
+      "CRM",
+      "Generative AI",
+      "Cloud",
+      "Enterprise",
+      "SAP BTP"
+    ],
+    "vernetzung": "Alle Branchen, globale Enterprises, SAP-Partner-\\u00d6kosystem (> 22 000 Partner)"
+  },
+  {
+    "id": 22,
+    "type": "company",
+    "name": "Siemens AG",
+    "branche": "Industrial AI / Digitalisierung",
+    "stadt": "M\\u00fcnchen",
+    "koordinaten": [
+      48.162,
+      11.601
+    ],
+    "gegründet": 1847,
+    "mitarbeiter": "~ 320 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: SIE)",
+    "ceo": "Roland Busch",
+    "website": "https://siemens.com",
+    "linkedin": "https://linkedin.com/company/siemens",
+    "beschreibung": "Technologiekonzern mit starkem KI-Fokus in Industrial Automation, Smart Buildings und Energieinfrastruktur. Siemens Industrial Copilot nutzt generative KI f\\u00fcr die Fertigung. Xcelerator AI-\\u00d6kosystem.",
+    "tags": [
+      "Industry 4.0",
+      "Digital Twin",
+      "IoT",
+      "Automation",
+      "Energy",
+      "Smart Manufacturing"
+    ],
+    "vernetzung": "Maschinenbau, Energie, Bau, Healthcare, Transport, \\u00d6ffentliche Hand"
+  },
+  {
+    "id": 23,
+    "type": "company",
+    "name": "Bosch Group",
+    "branche": "AI f\\u00fcr Automotive & IoT",
+    "stadt": "Stuttgart",
+    "koordinaten": [
+      48.77,
+      9.185
+    ],
+    "gegründet": 1886,
+    "mitarbeiter": "~ 430 000",
+    "finanzierung": "Nicht b\\u00f6rsennotiert (Robert Bosch GmbH)",
+    "ceo": "Stefan Hartung",
+    "website": "https://bosch.com",
+    "linkedin": "https://linkedin.com/company/bosch",
+    "beschreibung": "Technologie- und Dienstleistungsunternehmen mit eigenem Bosch Center for Artificial Intelligence (BCAI). KI in Fahrerassistenz, Smart Home, Predictive Maintenance und Halbleitern.",
+    "tags": [
+      "Automotive AI",
+      "Smart Home",
+      "Semiconductor",
+      "BCAI",
+      "Edge AI",
+      "IoT"
+    ],
+    "vernetzung": "OEMs, Tier-1-Zulieferer, Immobilienwirtschaft, Industrie, Medizintechnik"
+  },
+  {
+    "id": 24,
+    "type": "company",
+    "name": "Deutsche Telekom AG",
+    "branche": "Telekommunikation / AI",
+    "stadt": "Bonn",
+    "koordinaten": [
+      50.733,
+      7.099
+    ],
+    "gegründet": 1996,
+    "mitarbeiter": "~ 200 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: DTE)",
+    "ceo": "Timotheus H\\u00f6ttges",
+    "website": "https://telekom.com",
+    "linkedin": "https://linkedin.com/company/deutsche-telekom",
+    "beschreibung": "Europas gr\\u00f6\\u00dftes Telekommunikationsunternehmen. T-Systems und Telekom Innovation Laboratories entwickeln KI f\\u00fcr Netzwerkoptimierung, Kundendienst und souver\\u00e4ne Cloud-L\\u00f6sungen (Open Telekom Cloud).",
+    "tags": [
+      "5G AI",
+      "Cloud",
+      "Network Optimization",
+      "Customer AI",
+      "Open Telekom Cloud"
+    ],
+    "vernetzung": "\\u00d6ffentlicher Sektor, Gesundheitswesen, Automobil, Medien, KMU"
+  },
+  {
+    "id": 25,
+    "type": "company",
+    "name": "BMW Group",
+    "branche": "KI in der Automobilindustrie",
+    "stadt": "M\\u00fcnchen",
+    "koordinaten": [
+      48.177,
+      11.556
+    ],
+    "gegründet": 1916,
+    "mitarbeiter": "~ 155 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: BMW)",
+    "ceo": "Oliver Zipse",
+    "website": "https://bmwgroup.com",
+    "linkedin": "https://linkedin.com/company/bmwgroup",
+    "beschreibung": "BMW nutzt KI f\\u00fcr autonomes Fahren (Level 2+), Qualit\\u00e4tskontrolle in der Fertigung, personalisierten Kundenservice und Lieferkettenoptimierung. AWS-Partner f\\u00fcr KI-Cloud-Services.",
+    "tags": [
+      "Autonomous Driving",
+      "Quality AI",
+      "Connected Car",
+      "Supply Chain AI",
+      "ADAS"
+    ],
+    "vernetzung": "Automobilzulieferer, Technologieunternehmen, Versicherungen, Energieversorger"
+  },
+  {
+    "id": 26,
+    "type": "company",
+    "name": "Mercedes-Benz Group",
+    "branche": "KI in der Automobilindustrie",
+    "stadt": "Stuttgart",
+    "koordinaten": [
+      48.78,
+      9.175
+    ],
+    "gegründet": 1926,
+    "mitarbeiter": "~ 170 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: MBG)",
+    "ceo": "Ola K\\u00e4llenius",
+    "website": "https://mercedes-benz.com",
+    "linkedin": "https://linkedin.com/company/mercedes-benz",
+    "beschreibung": "MBUX KI-Assistent mit ChatGPT-Integration, autonome Fahrfunktionen, KI-gest\\u00fctzte Fertigung in der \\u201eFactory 56\\u201c. Strategische KI-Partnerschaften mit NVIDIA, Microsoft und Google.",
+    "tags": [
+      "MBUX",
+      "Autonomous Driving",
+      "NVIDIA",
+      "Generative AI",
+      "Smart Factory"
+    ],
+    "vernetzung": "Halbleiterhersteller, Cloud-Provider, Zulieferer, Mobility-Dienste"
+  },
+  {
+    "id": 27,
+    "type": "company",
+    "name": "Volkswagen AG",
+    "branche": "KI in der Automobilindustrie",
+    "stadt": "Wolfsburg",
+    "koordinaten": [
+      52.423,
+      10.787
+    ],
+    "gegründet": 1937,
+    "mitarbeiter": "~ 660 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: VOW3)",
+    "ceo": "Oliver Blume",
+    "website": "https://volkswagen-group.com",
+    "linkedin": "https://linkedin.com/company/volkswagen-group",
+    "beschreibung": "Weltweit gr\\u00f6\\u00df-ter Automobilhersteller mit umfassendem KI-Programm: Produktionsoptimierung, ChatGPT-Integration in Fahrzeuge (IDA), autonome Logistik und KI-gest\\u00fctztes Produktdesign.",
+    "tags": [
+      "ChatGPT Vehicle",
+      "Production AI",
+      "E-Mobility",
+      "Software-Defined Vehicle",
+      "CARIAD"
+    ],
+    "vernetzung": "Zulieferer, Software-Unternehmen, Charging-Infrastruktur, Flottenbetreiber"
+  },
+  {
+    "id": 28,
+    "type": "company",
+    "name": "Deutsche Bank AG",
+    "branche": "KI in der Finanzwirtschaft",
+    "stadt": "Frankfurt",
+    "koordinaten": [
+      50.107,
+      8.665
+    ],
+    "gegründet": 1870,
+    "mitarbeiter": "~ 90 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: DBK)",
+    "ceo": "Christian Sewing",
+    "website": "https://db.com",
+    "linkedin": "https://linkedin.com/company/deutsche-bank",
+    "beschreibung": "Einsatz von KI f\\u00fcr Risikobewertung, Betrugserkennung, Kundenservice-Automatisierung und algorithmischen Handel. Partnerschaft mit NVIDIA und Google f\\u00fcr generative KI in der Finanzanalyse.",
+    "tags": [
+      "Risk AI",
+      "Fraud Detection",
+      "Algorithmic Trading",
+      "RegTech",
+      "FinTech"
+    ],
+    "vernetzung": "FinTech-Startups, Regulierungsbeh\\u00f6rden (BaFin), Versicherungen, Unternehmen"
+  },
+  {
+    "id": 29,
+    "type": "company",
+    "name": "Allianz SE",
+    "branche": "KI in der Versicherungsbranche",
+    "stadt": "M\\u00fcnchen",
+    "koordinaten": [
+      48.135,
+      11.567
+    ],
+    "gegründet": 1890,
+    "mitarbeiter": "~ 160 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: ALV)",
+    "ceo": "Oliver B\\u00e4te",
+    "website": "https://allianz.com",
+    "linkedin": "https://linkedin.com/company/allianz",
+    "beschreibung": "KI f\\u00fcr automatisierte Schadensregulierung, Predictive Underwriting und personalisierten Kundenservice. Allianz Technology KI-Lab entwickelt konzernweite KI-L\\u00f6sungen f\\u00fcr 70+ Landesgesellschaften.",
+    "tags": [
+      "InsurTech",
+      "Claims AI",
+      "Underwriting AI",
+      "Customer Analytics",
+      "Global"
+    ],
+    "vernetzung": "InsurTech-Startups, Krankenh\\u00e4user, Automobilindustrie, Immobilien"
+  },
+  {
+    "id": 30,
+    "type": "company",
+    "name": "BASF SE",
+    "branche": "KI in der Chemieindustrie",
+    "stadt": "Ludwigshafen",
+    "koordinaten": [
+      49.477,
+      8.445
+    ],
+    "gegründet": 1865,
+    "mitarbeiter": "~ 112 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: BAS)",
+    "ceo": "Markus Kamieth",
+    "website": "https://basf.com",
+    "linkedin": "https://linkedin.com/company/basf",
+    "beschreibung": "Weltweit f\\u00fchrendes Chemieunternehmen. KI-Einsatz f\\u00fcr Materialentdeckung, Prozessoptimierung, Lieferkettenmanagement und Laborautomatisierung. Eigene KI-Plattform \\u201eChemovator\\u201c f\\u00fcr Startups.",
+    "tags": [
+      "Materials Discovery",
+      "Process Optimization",
+      "Laboratory AI",
+      "Chemistry AI",
+      "Chemovator"
+    ],
+    "vernetzung": "Pharmaunternehmen, Agrarunternehmen, Automobilindustrie, Materialforschung"
+  },
+  {
+    "id": 31,
+    "type": "company",
+    "name": "DHL Group / Deutsche Post",
+    "branche": "KI in Logistik & E-Commerce",
+    "stadt": "Bonn",
+    "koordinaten": [
+      50.729,
+      7.091
+    ],
+    "gegründet": 1969,
+    "mitarbeiter": "~ 590 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: DPW)",
+    "ceo": "Tobias Meyer",
+    "website": "https://dhl.com",
+    "linkedin": "https://linkedin.com/company/dhl",
+    "beschreibung": "KI-Einsatz f\\u00fcr Routenoptimierung, Sortierrobotik, Nachfrageprognosen und autonome Lieferfahrzeuge. DHL Resilience360 nutzt KI f\\u00fcr globales Supply-Chain-Risikomanagement.",
+    "tags": [
+      "Route Optimization",
+      "Supply Chain Risk",
+      "Warehouse Robotics",
+      "Last Mile AI",
+      "Global Logistics"
+    ],
+    "vernetzung": "E-Commerce, Pharma, Automobil, Handel, Lebensmittelindustrie"
+  },
+  {
+    "id": 32,
+    "type": "company",
+    "name": "Infineon Technologies",
+    "branche": "KI-Chips / Halbleiter",
+    "stadt": "M\\u00fcnchen",
+    "koordinaten": [
+      48.166,
+      11.553
+    ],
+    "gegründet": 1999,
+    "mitarbeiter": "~ 58 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: IFX)",
+    "ceo": "Jochen Hanebeck",
+    "website": "https://infineon.com",
+    "linkedin": "https://linkedin.com/company/infineon-technologies",
+    "beschreibung": "F\\u00fchrender Halbleiterhersteller f\\u00fcr KI-Edge-Computing, Automotive AI (Radar, LiDAR, MCUs) und Security-Chips. AURIX-Mikrocontroller sind Standard in autonomen Fahrzeugen.",
+    "tags": [
+      "Edge AI",
+      "Automotive Chips",
+      "Security IC",
+      "Radar",
+      "AURIX",
+      "Semiconductor"
+    ],
+    "vernetzung": "OEMs, EV-Hersteller, Industrie, IoT-Hersteller, Verteidigung"
+  },
+  {
+    "id": 33,
+    "type": "company",
+    "name": "Lufthansa Group",
+    "branche": "KI in der Luftfahrt",
+    "stadt": "Frankfurt",
+    "koordinaten": [
+      50.12,
+      8.69
+    ],
+    "gegründet": 1953,
+    "mitarbeiter": "~ 96 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: LHA)",
+    "ceo": "Carsten Spohr",
+    "website": "https://lufthansagroup.com",
+    "linkedin": "https://linkedin.com/company/lufthansa-group",
+    "beschreibung": "KI f\\u00fcr dynamisches Pricing, Flottenoptimierung, Predictive Maintenance und Passagierservice-Chatbots. Lufthansa Industry Solutions entwickelt KI-Produkte f\\u00fcr externe Kunden.",
+    "tags": [
+      "Pricing AI",
+      "Predictive Maintenance",
+      "Chatbot",
+      "Fleet Optimization",
+      "Aviation"
+    ],
+    "vernetzung": "Flugzeughersteller, Reiseb\\u00fccros, Flugh\\u00e4fen, Catering, IT-Dienstleister"
+  },
+  {
+    "id": 34,
+    "type": "company",
+    "name": "Zalando SE",
+    "branche": "KI im E-Commerce / Fashion",
+    "stadt": "Berlin",
+    "koordinaten": [
+      52.498,
+      13.413
+    ],
+    "gegründet": 2008,
+    "mitarbeiter": "~ 17 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: ZAL)",
+    "ceo": "Robert Gentz",
+    "website": "https://zalando.com",
+    "linkedin": "https://linkedin.com/company/zalando",
+    "beschreibung": "Europas f\\u00fchrende Modeplattform nutzt KI f\\u00fcr Personalisierung, Gr\\u00f6\\u00dfenempfehlungen, Trendprognosen, automatisches Styling und Retouren-Optimierung. Eigene KI-Forschungsabteilung.",
+    "tags": [
+      "Fashion AI",
+      "Recommendation Engine",
+      "Size AI",
+      "Computer Vision",
+      "Personalization"
+    ],
+    "vernetzung": "Modemarken, Logistikpartner, Technologieanbieter, Kreativagenturen"
+  },
+  {
+    "id": 35,
+    "type": "company",
+    "name": "Volkswagen Financial Services / Volkswagen Bank",
+    "branche": "KI in der Automobilfinanzierung",
+    "stadt": "Wolfsburg",
+    "koordinaten": [
+      52.42,
+      10.78
+    ],
+    "gegründet": 1994,
+    "mitarbeiter": "~ 15 000",
+    "finanzierung": "Tochter der Volkswagen AG",
+    "ceo": "Rolf Woller",
+    "website": "https://vwfs.de",
+    "linkedin": "https://linkedin.com/company/volkswagen-financial-services",
+    "beschreibung": "KI-gest\\u00fctzte Kreditw\\u00fcrdigkeitspr\\u00fcfung, personalisierte Finanzierungsangebote und automatisierte Schadensbewertung f\\u00fcr Fahrzeugleasingvertr\\u00e4ge europaweit.",
+    "tags": [
+      "Auto Finance",
+      "Credit AI",
+      "Leasing",
+      "Banking",
+      "Automotive"
+    ],
+    "vernetzung": "Autoh\\u00e4ndler, Banken, Versicherungen, OEMs"
+  },
+  {
+    "id": 36,
+    "type": "datacenter",
+    "name": "Equinix Frankfurt (FR-Cluster)",
+    "branche": "Carrier-neutrales Rechenzentrum",
+    "stadt": "Frankfurt",
+    "koordinaten": [
+      50.1,
+      8.63
+    ],
+    "gegründet": 2000,
+    "mitarbeiter": "N/A (Equinix: ~13 000)",
+    "finanzierung": "B\\u00f6rsennotiert (NASDAQ: EQIX)",
+    "ceo": "Adaire Fox-Martin (EMEA)",
+    "website": "https://equinix.de",
+    "linkedin": "https://linkedin.com/company/equinix",
+    "beschreibung": "Gr\\u00f6\\u00df-ter Colocation-Anbieter in Frankfurt mit 11+ Rechenzentren (FR1\\u2013FR11). Herzst\\u00fcck des DE-CIX-Internetknotens. Mehr als 1 700 direkte Verbindungen zu Cloud-Anbietern, ISPs und Netzwerken.",
+    "tags": [
+      "Colocation",
+      "Interconnection",
+      "DE-CIX",
+      "Cloud On-Ramp",
+      "Tier IV",
+      "Multi-Cloud"
+    ],
+    "vernetzung": "Cloud-Provider, Banken, Medien, Telekommunikation, Beh\\u00f6rden"
+  },
+  {
+    "id": 37,
+    "type": "datacenter",
+    "name": "Digital Realty / Interxion",
+    "branche": "Hyperscale Rechenzentrum",
+    "stadt": "Frankfurt",
+    "koordinaten": [
+      50.095,
+      8.62
+    ],
+    "gegründet": 2000,
+    "mitarbeiter": "N/A (Digital Realty: ~5 500)",
+    "finanzierung": "B\\u00f6rsennotiert (NYSE: DLR)",
+    "ceo": "Andy Power",
+    "website": "https://digitalrealty.com",
+    "linkedin": "https://linkedin.com/company/digital-realty",
+    "beschreibung": "Hyperscale-Campus in Frankfurt mit mehreren Hallen und direktem Anschluss an DE-CIX. Weitere Standorte in Hamburg, D\\u00fcsseldorf und M\\u00fcnchen. Bevorzugter Partner f\\u00fcr KI-GPU-Cluster.",
+    "tags": [
+      "Hyperscale",
+      "GPU Cluster",
+      "Multi-Site",
+      "Campus",
+      "AI Workloads"
+    ],
+    "vernetzung": "Hyperscaler, KI-Startups, Finanzinstitute, Medienunternehmen"
+  },
+  {
+    "id": 38,
+    "type": "datacenter",
+    "name": "AWS Deutschland \\u2013 Region eu-central-1",
+    "branche": "Public Cloud / AI-Infrastruktur",
+    "stadt": "Frankfurt",
+    "koordinaten": [
+      50.112,
+      8.67
+    ],
+    "gegründet": 2014,
+    "mitarbeiter": "N/A (Amazon: ~1,5 Mio.)",
+    "finanzierung": "Tochter von Amazon (NASDAQ: AMZN)",
+    "ceo": "Matt Garman (AWS)",
+    "website": "https://aws.amazon.com/de/local/germany/",
+    "linkedin": "https://linkedin.com/company/amazon-web-services",
+    "beschreibung": "AWS-Region Frankfurt (eu-central-1) mit 3 Availability Zones. KI-Dienste: SageMaker, Bedrock (Claude, Llama), Rekognition, Comprehend. Datenschutzkonform nach deutschem Recht dank AWS GDPR Center.",
+    "tags": [
+      "Public Cloud",
+      "SageMaker",
+      "Bedrock",
+      "LLM API",
+      "DSGVO",
+      "GPU-as-a-Service"
+    ],
+    "vernetzung": "Alle Branchen, Startups (via AWS Activate), Beh\\u00f6rden, Forschung"
+  },
+  {
+    "id": 39,
+    "type": "datacenter",
+    "name": "Microsoft Azure \\u2013 Deutschland Region",
+    "branche": "Public Cloud / AI-Infrastruktur",
+    "stadt": "Frankfurt",
+    "koordinaten": [
+      50.108,
+      8.674
+    ],
+    "gegründet": 2019,
+    "mitarbeiter": "N/A (Microsoft: ~220 000)",
+    "finanzierung": "B\\u00f6rsennotiert (NASDAQ: MSFT)",
+    "ceo": "Satya Nadella",
+    "website": "https://azure.microsoft.com/de-de/global-infrastructure/germany/",
+    "linkedin": "https://linkedin.com/company/microsoft",
+    "beschreibung": "Azure-Regionen in Deutschland West Central (Frankfurt) und North (Berlin). Azure OpenAI Service bietet GPT-4, Copilot und DALL-E mit DSGVO-konformer EU-Datenhaltung.",
+    "tags": [
+      "Azure OpenAI",
+      "GPT-4",
+      "Copilot",
+      "DSGVO",
+      "Hybrid Cloud",
+      "Microsoft 365 AI"
+    ],
+    "vernetzung": "Enterprises, \\u00f6ffentliche Verwaltung, Healthcare, Finanzdienstleister"
+  },
+  {
+    "id": 40,
+    "type": "datacenter",
+    "name": "Google Cloud \\u2013 Region europe-west3",
+    "branche": "Public Cloud / AI-Infrastruktur",
+    "stadt": "Frankfurt",
+    "koordinaten": [
+      50.103,
+      8.66
+    ],
+    "gegründet": 2017,
+    "mitarbeiter": "N/A (Google/Alphabet: ~180 000)",
+    "finanzierung": "B\\u00f6rsennotiert (NASDAQ: GOOGL)",
+    "ceo": "Thomas Kurian (Google Cloud)",
+    "website": "https://cloud.google.com/about/locations/frankfurt",
+    "linkedin": "https://linkedin.com/company/google-cloud",
+    "beschreibung": "Google Cloud Frankfurt mit Vertex AI, Gemini-Modellen und TPU-Zugang. Datentreuh\\u00e4nder-Option via T-Systems. Speziell f\\u00fcr KRITIS-konforme KI-Workloads im \\u00f6ffentlichen Sektor ausgelegt.",
+    "tags": [
+      "Vertex AI",
+      "Gemini",
+      "TPU",
+      "KRITIS",
+      "Datentreuh\\u00e4nder",
+      "T-Systems"
+    ],
+    "vernetzung": "Beh\\u00f6rden, Medien, Finanzbranche, Forschungseinrichtungen"
+  },
+  {
+    "id": 41,
+    "type": "datacenter",
+    "name": "Hetzner Online",
+    "branche": "Managed Hosting / Cloud",
+    "stadt": "N\\u00fcrnberg",
+    "koordinaten": [
+      49.454,
+      11.078
+    ],
+    "gegründet": 1997,
+    "mitarbeiter": "~ 500",
+    "finanzierung": "Privatunternehmen",
+    "ceo": "Martin Hetzner",
+    "website": "https://hetzner.com",
+    "linkedin": "https://linkedin.com/company/hetzner-online",
+    "beschreibung": "Deutschlands kosteneffizientester Rechenzentrumsbetreiber. Standorte in N\\u00fcrnberg, Falkenstein und Helsinki. GPU-Server f\\u00fcr KI-Training (H100, A100, RTX) zu wettbewerbsf\\u00e4higen Preisen.",
+    "tags": [
+      "Dedicated Server",
+      "GPU Server",
+      "Affordable Cloud",
+      "H100",
+      "KI-Training",
+      "CO\\u2082-neutral"
+    ],
+    "vernetzung": "Startups, Mittelstand, Forschungsinstitute, Webagenturen, Developer"
+  },
+  {
+    "id": 42,
+    "type": "datacenter",
+    "name": "IONOS (1&1 Ionos SE)",
+    "branche": "Cloud-Hosting / Managed Services",
+    "stadt": "Karlsruhe",
+    "koordinaten": [
+      49.006,
+      8.403
+    ],
+    "gegründet": 1988,
+    "mitarbeiter": "~ 4 000",
+    "finanzierung": "B\\u00f6rsennotiert (XETRA: IOS)",
+    "ceo": "Achim Weiss",
+    "website": "https://ionos.de",
+    "linkedin": "https://linkedin.com/company/ionos",
+    "beschreibung": "Europas gr\\u00f6\\u00df-ter Webhoster with eigenen Rechenzentren in Karlsruhe und Frankfurt. IONOS AI Model Hub bietet gehostete LLM-APIs (Llama, Mistral) with europ\\u00e4ischer Datenhaltung.",
+    "tags": [
+      "KMU-Cloud",
+      "AI Model Hub",
+      "DSGVO",
+      "Shared Hosting",
+      "VPS",
+      "Llama API"
+    ],
+    "vernetzung": "KMU, E-Commerce, Agenturen, Non-Profits, \\u00d6ffentliche Verwaltung"
+  },
+  {
+    "id": 43,
+    "type": "datacenter",
+    "name": "T-Systems (Open Telekom Cloud)",
+    "branche": "Souver\\u00e4ne Cloud / Managed IT",
+    "stadt": "Frankfurt",
+    "koordinaten": [
+      50.113,
+      8.695
+    ],
+    "gegründet": 1995,
+    "mitarbeiter": "~ 28 000",
+    "finanzierung": "Tochter der Deutschen Telekom AG",
+    "ceo": "Adel Al-Saleh",
+    "website": "https://t-systems.com",
+    "linkedin": "https://linkedin.com/company/t-systems",
+    "beschreibung": "Betreiber der Open Telekom Cloud \\u2013 DSGVO-konforme, souver\\u00e4ne Public Cloud f\\u00fcr den deutschen Markt. Google-Datentreuh\\u00e4nder f\\u00fcr das \\u00f6ffentliche Gesundheitswesen. Rechenzentren in Biere und Magdeburg.",
+    "tags": [
+      "Souver\\u00e4ne Cloud",
+      "DSGVO",
+      "Datentreuh\\u00e4nder",
+      "BSI C5",
+      "Healthcare IT",
+      "Government Cloud"
+    ],
+    "vernetzung": "Bundesbeh\\u00f6rden, Gesundheitswesen, Banken, Versicherungen, KRITIS-Betreiber"
+  },
+  {
+    "id": 44,
+    "type": "datacenter",
+    "name": "DE-CIX Frankfurt",
+    "branche": "Internet Exchange Point (IXP)",
+    "stadt": "Frankfurt",
+    "koordinaten": [
+      50.116,
+      8.685
+    ],
+    "gegründet": 1995,
+    "mitarbeiter": "~ 200",
+    "finanzierung": "Eco e.V. (Non-profit)",
+    "ceo": "Thomas King (CTO) / Markus Sch\\u00f6ller",
+    "website": "https://de-cix.net",
+    "linkedin": "https://linkedin.com/company/de-cix",
+    "beschreibung": "Weltgr\\u00f6\\u00df-ter Internetknoten \\u2013 14,4 Tbit/s Peakdurchsatz (2024). Verbindet \\u00fcber 1 000 Netze. Kritische Infrastruktur f\\u00fcr latenzarme KI-Dienste, CDNs und Echtzeit-Daten\\u00fcbertragung in Europa.",
+    "tags": [
+      "Internet Exchange",
+      "Peering",
+      "KRITIS",
+      "Low Latency",
+      "CDN",
+      "DNS"
+    ],
+    "vernetzung": "ISPs, CDNs, Cloud-Provider, Content-Plattformen, Telekommunikation"
+  },
+  {
+    "id": 45,
+    "type": "datacenter",
+    "name": "NTT Global Data Centers",
+    "branche": "Colocation / AI-ready Rechenzentren",
+    "stadt": "Frankfurt",
+    "koordinaten": [
+      50.09,
+      8.615
+    ],
+    "gegründet": 1998,
+    "mitarbeiter": "N/A (NTT: ~330 000)",
+    "finanzierung": "Tochter NTT Ltd. (Japan)",
+    "ceo": "Yuji Kohda",
+    "website": "https://hello.global.ntt/de-de",
+    "linkedin": "https://linkedin.com/company/ntt-global-data-centers",
+    "beschreibung": "NTT betreibt in Frankfurt einen der modernsten AI-ready Colocation-Campusse Europas mit hochdichter K\\u00fchlung f\\u00fcr GPU-/AI-Server bis 40 kW pro Rack. Fiber-Direct-Anschluss an DE-CIX.",
+    "tags": [
+      "AI-ready DC",
+      "High Density",
+      "GPU Hosting",
+      "Colocation",
+      "Carrier Neutral",
+      "Frankfurt"
+    ],
+    "vernetzung": "Enterprise-IT, Cloud-Provider, Finanzinstitute, KI-Infrastruktur-Betreiber"
   }
 ]
